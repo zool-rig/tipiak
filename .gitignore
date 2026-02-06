@@ -1,0 +1,4 @@
+/target
+/tests_root
+.db
+Cargo.lock

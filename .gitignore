@@ -2,3 +2,4 @@
 /tests_root
 .db
 Cargo.lock
+*.aseprite

@@ -2,10 +2,10 @@ use dyn_fmt::AsStrFormatExt;
 use rusqlite::{Connection, params_from_iter};
 use std::{error::Error, path::Path};
 
-use crate::db_utils::{connect, get_db_path};
+use crate::db::queries::{SEARCH_FILES_QUERY, SELECT_FILE_TYPES_BY_NAMES_QUERY};
 use crate::models::from_row::FromRow;
 use crate::models::{file::File, file_type::FileType};
-use crate::queries::{SEARCH_FILES_QUERY, SELECT_FILE_TYPES_BY_NAMES_QUERY};
+use crate::utils::db_utils::{connect, get_db_path};
 
 pub struct FileTypeFilters {
     pub file_type_names: Vec<String>,
@@ -14,11 +14,7 @@ pub struct FileTypeFilters {
 impl FileTypeFilters {
     pub fn from_string(file_types: String) -> Self {
         Self {
-            file_type_names: file_types
-                .split("|")
-                .into_iter()
-                .map(|t| t.to_string())
-                .collect(),
+            file_type_names: file_types.split("|").map(|t| t.to_string()).collect(),
         }
     }
 
@@ -27,8 +23,7 @@ impl FileTypeFilters {
             return Ok(Vec::new());
         }
 
-        let placeholders = std::iter::repeat("?")
-            .take(self.file_type_names.len())
+        let placeholders = std::iter::repeat_n("?", self.file_type_names.len())
             .collect::<Vec<_>>()
             .join(", ");
 
@@ -44,6 +39,10 @@ impl FileTypeFilters {
     }
 }
 
+fn sanitiez_word(word: &str) -> String {
+    word.replace(|c: char| !c.is_alphanumeric(), "")
+}
+
 pub fn search(
     root_dir: &Path,
     input: &str,
@@ -54,6 +53,18 @@ pub fn search(
     if !db_path.exists() {
         return Err(".db file not found".into());
     }
+
+    let inputs: Vec<String> = input
+        .split_whitespace()
+        .map(sanitiez_word)
+        .filter(|w| !w.is_empty())
+        .collect();
+
+    if inputs.is_empty() {
+        return Err(format!("Invalid search input : {:?}", input).into());
+    }
+
+    let input = inputs.join(" OR ");
 
     let conn = connect(&db_path)?;
 
@@ -71,7 +82,7 @@ pub fn search(
 
     let mut stmt = conn.prepare(&sql)?;
     Ok(stmt
-        .query_map([input], File::from_row)?
+        .query_map([&input], File::from_row)?
         .filter_map(Result::ok)
         .collect())
 }

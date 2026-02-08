@@ -9,12 +9,12 @@ use walkdir::WalkDir;
 
 use crate::config::CONFIG;
 use crate::constants::DB_NAME;
-use crate::db_utils::{connect, get_db_path};
-use crate::queries::{
+use crate::db::queries::{
     CREATE_FILE_TYPES_TABLE_QUERY, CREATE_FILES_TABLE_QUERY, CREATE_TOKENS_TABLE_QUERY,
     INSERT_FILE_QUERY, INSERT_FILE_TYPES_QUERY, INSERT_TOKENS_QUERY,
 };
 use crate::tokenizers::registry::TokenizerRegistry;
+use crate::utils::db_utils::{connect, get_db_path};
 
 fn get_file_type_from_ext(ext: String) -> Option<String> {
     for (key, value) in CONFIG.file_types.iter() {

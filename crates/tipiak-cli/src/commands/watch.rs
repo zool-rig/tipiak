@@ -24,10 +24,10 @@ impl WatchCommand {
                         for res in rx {
                             match res {
                                 Ok(event) => {
-                                    if event.kind.is_create() {
-                                        if let Err(e) = crawl(&path) {
-                                            println!("Failed to crawl directory : {:?}", e);
-                                        }
+                                    if event.kind.is_create()
+                                        && let Err(e) = crawl(&path)
+                                    {
+                                        println!("Failed to crawl directory : {:?}", e);
                                     }
                                 }
                                 Err(e) => println!("watch error: {:?}", e),

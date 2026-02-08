@@ -61,7 +61,8 @@ query!(
     JOIN files f ON f.id = tokens.file_id
     LEFT JOIN file_types t
     ON f.type_id = t.id
-    WHERE tokens MATCH ?{};"
+    WHERE tokens MATCH ?{}
+    ORDER BY RANK;"
 );
 
 query!(

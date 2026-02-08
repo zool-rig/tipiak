@@ -6,7 +6,7 @@ use std::{
 
 use crate::config::CONFIG;
 use crate::constants::DB_NAME;
-use crate::queries::ENABLE_FOREIGN_KEYS_QUERY;
+use crate::db::queries::ENABLE_FOREIGN_KEYS_QUERY;
 
 pub fn connect(db_path: &Path) -> Result<Connection, Box<dyn Error>> {
     let conn = Connection::open(db_path)?;

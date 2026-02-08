@@ -1,8 +1,0 @@
-db_override_path = "/home/zool/rust-projects/tipiak/"
-
-[file_types]
-images = ["png", "jpg", "jpeg", "webp"]
-videos = ["mp4", "mov", "avi"]
-sounds = ["mp3", "wav"]
-web = ["zim"]
-text = ["txt", "md", "html"]

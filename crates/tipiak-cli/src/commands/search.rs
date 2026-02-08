@@ -1,6 +1,6 @@
 use clap::Args;
 use std::path::PathBuf;
-use tipiak_search_engine::{search, FileTypeFilters};
+use tipiak_search_engine::{FileTypeFilters, search};
 
 // Search files from key words
 #[derive(Args)]
@@ -20,10 +20,10 @@ pub struct SearchCommand {
 impl SearchCommand {
     pub fn run(&self) {
         let path = self.path.clone().unwrap_or(PathBuf::from("."));
-        let filters = match &self.filters {
-            Some(f) => Some(FileTypeFilters::from_string(f.to_string())),
-            None => None
-        };
+        let filters = self
+            .filters
+            .as_ref()
+            .map(|f| FileTypeFilters::from_string(f.to_string()));
         match search(&path, &self.pattern, filters) {
             Ok(files) => {
                 for file in files {

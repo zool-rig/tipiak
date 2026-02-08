@@ -4,10 +4,50 @@ use std::{self, collections::HashMap, error::Error, fs, path::PathBuf};
 
 use crate::constants::{CONFIG_NAME, CONFIG_PATH_ENV_KEY};
 
-#[derive(Deserialize, Debug, Default)]
+#[derive(Deserialize, Debug)]
 pub struct Config {
     pub file_types: HashMap<String, Vec<String>>,
     pub db_override_path: Option<String>,
+}
+
+impl Default for Config {
+    fn default() -> Self {
+        let mut file_types: HashMap<String, Vec<String>> = HashMap::new();
+        file_types.insert(
+            "images".to_owned(),
+            ["tiff", "jpeg", "jpg", "heif", "png", "webp"]
+                .into_iter()
+                .map(|s| s.to_owned())
+                .collect(),
+        );
+        file_types.insert(
+            "videos".to_owned(),
+            ["mp4", "mov", "avi"]
+                .into_iter()
+                .map(|s| s.to_owned())
+                .collect(),
+        );
+        file_types.insert(
+            "sounds".to_owned(),
+            ["mp3", "wav"].into_iter().map(|s| s.to_owned()).collect(),
+        );
+        file_types.insert(
+            "web".to_owned(),
+            ["zim"].into_iter().map(|s| s.to_owned()).collect(),
+        );
+        file_types.insert(
+            "text".to_owned(),
+            ["txt", "md", "html"]
+                .into_iter()
+                .map(|s| s.to_owned())
+                .collect(),
+        );
+
+        Self {
+            file_types,
+            db_override_path: None,
+        }
+    }
 }
 
 impl Config {

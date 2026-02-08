@@ -1,6 +1,10 @@
-use std::{error::Error, path::Path};
+use std::{collections::HashSet, error::Error, path::Path};
 
-use crate::tokenizers::{file_name_tokenizer::FileNameTokenizer, tokenizer::Tokenizer};
+use crate::tokenizers::{
+    file_name_tokenizer::FileNameTokenizer, paragraph_tokenizer::ParagraphTokenizer,
+    title_tokenizer::MarkdownTitleTokenizer, tokenizer::Tokenizer,
+    metadata_tokenizer::MetadataTokenizer,
+};
 
 pub struct TokenizerRegistry {
     tokenizers: Vec<Box<dyn Tokenizer>>,
@@ -9,7 +13,12 @@ pub struct TokenizerRegistry {
 impl TokenizerRegistry {
     pub fn new() -> Self {
         Self {
-            tokenizers: vec![Box::new(FileNameTokenizer)],
+            tokenizers: vec![
+                Box::new(FileNameTokenizer),
+                Box::new(ParagraphTokenizer),
+                Box::new(MarkdownTitleTokenizer),
+                Box::new(MetadataTokenizer),
+            ],
         }
     }
 
@@ -20,6 +29,8 @@ impl TokenizerRegistry {
             .filter(|t| t.supports(path))
             .filter_map(|t| t.tokenize(path).ok())
             .flatten()
+            .collect::<HashSet<_>>()
+            .into_iter()
             .collect())
     }
 }

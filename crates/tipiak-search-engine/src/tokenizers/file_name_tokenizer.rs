@@ -1,13 +1,7 @@
 use std::{collections::HashSet, error::Error, path::Path};
 
-use lazy_static::lazy_static;
-use regex::Regex;
-
 use crate::tokenizers::tokenizer::Tokenizer;
-
-lazy_static! {
-    static ref TOKEN_EXPR: Regex = Regex::new(r"\w+").unwrap();
-}
+use crate::utils::token_utils::is_valid_token;
 
 pub struct FileNameTokenizer;
 
@@ -25,8 +19,8 @@ impl Tokenizer for FileNameTokenizer {
             .to_lowercase()
             .replace(" ", "_")
             .split("_")
+            .filter(is_valid_token)
             .map(|s| s.to_string())
-            .filter(|s| TOKEN_EXPR.is_match(s))
             .collect::<HashSet<_>>()
             .into_iter()
             .collect())

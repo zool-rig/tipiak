@@ -1,9 +1,9 @@
 use std::{collections::HashSet, error::Error, path::Path};
 
 use crate::tokenizers::{
-    file_name_tokenizer::FileNameTokenizer, paragraph_tokenizer::ParagraphTokenizer,
-    title_tokenizer::MarkdownTitleTokenizer, tokenizer::Tokenizer,
-    metadata_tokenizer::MetadataTokenizer,
+    file_name_tokenizer::FileNameTokenizer, metadata_tokenizer::MetadataTokenizer,
+    paragraph_tokenizer::ParagraphTokenizer, title_tokenizer::MarkdownTitleTokenizer,
+    tokenizer::Tokenizer,
 };
 
 pub struct TokenizerRegistry {

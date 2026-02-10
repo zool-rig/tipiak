@@ -110,6 +110,10 @@ pub fn crawl(root_dir: &Path) -> Result<(), Box<dyn Error>> {
 
     for task in files_to_tokenize {
         let tokens = registry.tokenize(&task.path)?;
+        if tokens.is_empty() {
+            warn!("No tokens found for {:?}", task.path);
+            continue;
+        }
         conn.execute(INSERT_TOKENS_QUERY, (tokens.join(" "), task.id))?;
         info!("{:?} tokenized !", task.path);
     }

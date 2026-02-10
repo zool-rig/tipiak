@@ -6,6 +6,7 @@ use crate::db::queries::{SEARCH_FILES_QUERY, SELECT_FILE_TYPES_BY_NAMES_QUERY};
 use crate::models::from_row::FromRow;
 use crate::models::{file::File, file_type::FileType};
 use crate::utils::db_utils::{connect, get_db_path};
+use crate::utils::token_utils::sanitize_word;
 
 pub struct FileTypeFilters {
     pub file_type_names: Vec<String>,
@@ -39,10 +40,6 @@ impl FileTypeFilters {
     }
 }
 
-fn sanitiez_word(word: &str) -> String {
-    word.replace(|c: char| !c.is_alphanumeric(), "")
-}
-
 pub fn search(
     root_dir: &Path,
     input: &str,
@@ -56,7 +53,7 @@ pub fn search(
 
     let inputs: Vec<String> = input
         .split_whitespace()
-        .map(sanitiez_word)
+        .map(sanitize_word)
         .filter(|w| !w.is_empty())
         .collect();
 

@@ -15,30 +15,29 @@ impl MediaMetadata {
         if let Some(title) = &self.title {
             tokens.extend(
                 title
-                .split_whitespace()
+                    .split_whitespace()
                     .filter(is_valid_token)
                     .map(|w| w.to_string()),
             );
         }
-        
+
         if let Some(description) = &self.description {
             tokens.extend(
                 description
-                .split_whitespace()
-                .filter(is_valid_token)
-                .map(|w| w.to_string()),
+                    .split_whitespace()
+                    .filter(is_valid_token)
+                    .map(|w| w.to_string()),
             );
         }
-        
+
         if let Some(tags) = &self.tags {
             tokens.extend(
-                tags
-                .split_whitespace()
-                .filter(is_valid_token)
-                .map(|w| w.to_string()),
+                tags.split_whitespace()
+                    .filter(is_valid_token)
+                    .map(|w| w.to_string()),
             );
         }
-        
+
         if let Some(author) = &self.author {
             tokens.extend(
                 author
@@ -47,7 +46,7 @@ impl MediaMetadata {
                     .map(|w| w.to_string()),
             );
         }
-        
+
         tokens
     }
 

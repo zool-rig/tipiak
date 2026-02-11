@@ -35,7 +35,6 @@ pub fn sanitize_word(word: &str) -> String {
 
 pub fn sanitize_words(words: &str) -> String {
     words
-        .trim()
         .split_whitespace()
         .map(sanitize_word)
         .collect::<Vec<String>>()

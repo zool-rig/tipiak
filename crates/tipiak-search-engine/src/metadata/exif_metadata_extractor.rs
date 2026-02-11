@@ -72,21 +72,20 @@ impl MetadataExtractor for ExifMetadataExtractor {
                 exif::Tag::UserComment => {
                     let value = f.display_value().with_unit(&exif).to_string();
                     let bytes = hex_string_to_bytes(&value);
-                    if let Some(b) = bytes {
-                        if let Some(decoded_value) = user_comment_to_string(&b) {
-                            if is_indexable_human_text(&decoded_value) {
-                                let sanitized_value = sanitize_words(&decoded_value);
-                                if !sanitized_value.is_empty() {
-                                    metadata.description = Some(sanitized_value);
-                                }
-                            }
+                    if let Some(b) = bytes
+                        && let Some(decoded_value) = user_comment_to_string(&b)
+                        && is_indexable_human_text(&decoded_value)
+                    {
+                        let sanitized_value = sanitize_words(&decoded_value);
+                        if !sanitized_value.is_empty() {
+                            metadata.description = Some(sanitized_value);
                         }
                     }
                 }
                 _ => (),
             }
         }
-        
+
         Ok(if !metadata.is_null() {
             Some(metadata)
         } else {

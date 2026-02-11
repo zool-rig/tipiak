@@ -5,6 +5,7 @@ edition = "2024"
 
 [dependencies]
 dyn-fmt = "0.4.3"
+id3 = "1.16.4"
 iptc = "0.3.0"
 kamadak-exif = "0.6.1"
 lazy_static = "1.5.0"

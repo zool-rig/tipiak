@@ -29,6 +29,7 @@ impl TokenizerRegistry {
             .filter(|t| t.supports(path))
             .filter_map(|t| t.tokenize(path).ok())
             .flatten()
+            .map(|t| t.to_lowercase())
             .collect::<HashSet<_>>()
             .into_iter()
             .collect())

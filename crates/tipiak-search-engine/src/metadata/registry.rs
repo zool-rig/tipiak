@@ -5,6 +5,7 @@ use crate::metadata::extractor::MetadataExtractor;
 use crate::metadata::iptc_metadata_extractor::IptcMetadataExtractor;
 use crate::metadata::media_metadata::MediaMetadata;
 use crate::metadata::xmp_metadata_extractor::XmpMetadataExtractor;
+use crate::metadata::id3_metadata_extractor::Id3MetadataExtractor;
 
 pub struct MetadataExtractorRegistry {
     extractors: Vec<Box<dyn MetadataExtractor>>,
@@ -17,6 +18,7 @@ impl MetadataExtractorRegistry {
                 Box::new(ExifMetadataExtractor),
                 Box::new(IptcMetadataExtractor),
                 Box::new(XmpMetadataExtractor),
+                Box::new(Id3MetadataExtractor),
             ],
         }
     }

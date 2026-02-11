@@ -1,4 +1,4 @@
-use crate::utils::token_utils::is_valid_token;
+use crate::utils::token_utils::{is_valid_token, sanitize_word};
 
 #[derive(Default, Debug)]
 pub struct MediaMetadata {
@@ -17,6 +17,7 @@ impl MediaMetadata {
                 title
                     .split_whitespace()
                     .filter(is_valid_token)
+                    .map(sanitize_word)
                     .map(|w| w.to_string()),
             );
         }
@@ -26,6 +27,7 @@ impl MediaMetadata {
                 description
                     .split_whitespace()
                     .filter(is_valid_token)
+                    .map(sanitize_word)
                     .map(|w| w.to_string()),
             );
         }
@@ -34,6 +36,7 @@ impl MediaMetadata {
             tokens.extend(
                 tags.split_whitespace()
                     .filter(is_valid_token)
+                    .map(sanitize_word)
                     .map(|w| w.to_string()),
             );
         }
@@ -43,6 +46,7 @@ impl MediaMetadata {
                 author
                     .split_whitespace()
                     .filter(is_valid_token)
+                    .map(sanitize_word)
                     .map(|w| w.to_string()),
             );
         }

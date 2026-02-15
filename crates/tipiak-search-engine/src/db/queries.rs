@@ -69,3 +69,5 @@ query!(
     SELECT_FILE_TYPES_BY_NAMES_QUERY,
     "SELECT * FROM file_types WHERE name IN ({});"
 );
+
+query!(SELECT_ALL_TOKENS_QUERY, "SELECT content FROM tokens;");

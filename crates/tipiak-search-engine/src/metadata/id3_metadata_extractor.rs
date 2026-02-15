@@ -1,5 +1,5 @@
-use std::{error::Error, path::Path};
 use id3::{Tag, TagLike};
+use std::{error::Error, path::Path};
 
 use crate::metadata::extractor::MetadataExtractor;
 use crate::metadata::media_metadata::MediaMetadata;
@@ -14,7 +14,7 @@ impl MetadataExtractor for Id3MetadataExtractor {
 
     fn extract(&self, path: &Path) -> Result<Option<MediaMetadata>, Box<dyn Error>> {
         let tags = Tag::read_from_path(path)?;
-        
+
         let mut metadata = MediaMetadata::default();
 
         if let Some(artist) = tags.artist() {
@@ -27,7 +27,7 @@ impl MetadataExtractor for Id3MetadataExtractor {
         if let Some(album) = tags.album() {
             metadata.description = Some(album.to_string());
         }
-        
+
         if let Some(genre) = tags.genre() {
             metadata.tags = Some(genre.to_string())
         }

@@ -2,7 +2,7 @@ use std::{error::Error, path::Path};
 
 use crate::metadata::registry::MetadataExtractorRegistry;
 use crate::tokenizers::tokenizer::Tokenizer;
-use crate::utils::fs_utils::{is_image_file, is_audio_file};
+use crate::utils::fs_utils::{is_audio_file, is_image_file};
 
 pub struct MetadataTokenizer;
 

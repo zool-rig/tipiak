@@ -2,10 +2,10 @@ use std::{error::Error, path::Path};
 
 use crate::metadata::exif_metadata_extractor::ExifMetadataExtractor;
 use crate::metadata::extractor::MetadataExtractor;
+use crate::metadata::id3_metadata_extractor::Id3MetadataExtractor;
 use crate::metadata::iptc_metadata_extractor::IptcMetadataExtractor;
 use crate::metadata::media_metadata::MediaMetadata;
 use crate::metadata::xmp_metadata_extractor::XmpMetadataExtractor;
-use crate::metadata::id3_metadata_extractor::Id3MetadataExtractor;
 
 pub struct MetadataExtractorRegistry {
     extractors: Vec<Box<dyn MetadataExtractor>>,

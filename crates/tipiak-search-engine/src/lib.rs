@@ -12,3 +12,4 @@ pub use crate::crawler::crawl;
 pub use crate::models::file::File;
 pub use crate::models::file_type::FileType;
 pub use crate::searcher::{FileTypeFilters, search};
+pub use crate::utils::db_utils::get_all_tokens;

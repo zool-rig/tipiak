@@ -8,6 +8,7 @@ use crate::models::{file::File, file_type::FileType};
 use crate::utils::db_utils::{connect, get_db_path};
 use crate::utils::token_utils::sanitize_word;
 
+#[derive(Debug)]
 pub struct FileTypeFilters {
     pub file_type_names: Vec<String>,
 }
@@ -45,6 +46,9 @@ pub fn search(
     input: &str,
     filters: Option<FileTypeFilters>,
 ) -> Result<Vec<File>, Box<dyn Error>> {
+    println!("{:?}", root_dir);
+    println!("{:?}", input);
+    println!("{:?}", filters);
     let db_path = get_db_path(root_dir);
 
     if !db_path.exists() {

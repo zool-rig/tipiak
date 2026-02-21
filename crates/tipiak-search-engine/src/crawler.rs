@@ -3,6 +3,7 @@ use simple_logger::SimpleLogger;
 use std::{
     collections::HashMap,
     error::Error,
+    fs,
     path::{Path, PathBuf},
 };
 use walkdir::WalkDir;
@@ -80,8 +81,10 @@ pub fn crawl(root_dir: &Path) -> Result<(), Box<dyn Error>> {
                 Some(ext) => match get_file_type_from_ext(ext.to_string()) {
                     Some(file_type_name) => {
                         let file_type_id = file_type_map.get(&file_type_name).unwrap();
-                        let inserted = conn
-                            .execute(INSERT_FILE_QUERY, (path.to_str().unwrap(), file_type_id))?;
+                        let inserted = conn.execute(
+                            INSERT_FILE_QUERY,
+                            (fs::canonicalize(&path)?.to_str(), file_type_id),
+                        )?;
                         if inserted == 0 {
                             continue;
                         }

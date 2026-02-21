@@ -71,3 +71,8 @@ query!(
 );
 
 query!(SELECT_ALL_TOKENS_QUERY, "SELECT content FROM tokens;");
+
+query!(
+    SELECT_PATH_FROM_ID_QUERY,
+    "SELECT path FROM files WHERE id = ?;"
+);

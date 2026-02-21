@@ -1,0 +1,22 @@
+use dioxus::prelude::*;
+use std::collections::HashMap;
+
+// use crate::config::Config;
+
+#[get("/api/config/file-types")]
+pub async fn file_types() -> Result<HashMap<String, Vec<String>>> {
+    use tipiak_search_engine;
+    Ok(tipiak_search_engine::CONFIG.file_types.clone())
+}
+
+// #[get("/api/config")]
+// pub async fn config() -> Result<Config, ServerFnError> {
+//     match Config::new() {
+//         Ok(c) => Ok(c),
+//         Err(e) => Err(ServerFnError::ServerError {
+//             message: "Failed to load config".to_string(),
+//             code: 500,
+//             details: Some(format!("{:?}", e).into()),
+//         }),
+//     }
+// }

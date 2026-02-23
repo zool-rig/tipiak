@@ -1,6 +1,7 @@
 use dioxus::prelude::*;
 
 use crate::api::search::search;
+use crate::components::file::File;
 use crate::components::filters_bar::FiltersBar;
 use crate::components::header::Header;
 use crate::components::search_bar::SearchBar;
@@ -42,9 +43,12 @@ pub fn SearchResult(pattern: String, filters: String) -> Element {
             match &*matching_files.read() {
                 Some(Ok(files)) => {
                     rsx! {
-                        for file in files {
-                            p { "{file.type_name} -> {file.path}" }
-                            img { src: "/api/media/{file.id}", width:200 }
+                        div { class: "separator" }
+                        div {
+                            class: "search-result-viewport",
+                            for file in files {
+                                File { file: file.clone() }
+                            }
                         }
                     }
                 },

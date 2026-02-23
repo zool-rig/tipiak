@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::config::Config;
 
-#[derive(Deserialize, Serialize, Debug)]
+#[derive(Deserialize, Serialize, Debug, Clone, PartialEq)]
 pub struct PayloadFile {
     pub id: i64,
     pub path: String,
@@ -19,12 +19,14 @@ pub async fn search(
     use tipiak_search_engine;
 
     let se_config = &tipiak_search_engine::CONFIG;
-    let filters_str = se_config
-        .file_types
+    let mut file_types_names: Vec<String> =
+        se_config.file_types.iter().map(|x| x.0.clone()).collect();
+    file_types_names.sort_by(|a, b| a.cmp(&b));
+    let filters_str = file_types_names
         .iter()
         .enumerate()
         .filter(|x| filters[x.0])
-        .map(|x| x.1 .0.to_string())
+        .map(|x| x.1.to_string())
         .collect::<Vec<String>>()
         .join("|");
 

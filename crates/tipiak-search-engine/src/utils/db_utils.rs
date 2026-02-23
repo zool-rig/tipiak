@@ -2,7 +2,6 @@ use rusqlite::Connection;
 use std::{
     collections::HashSet,
     error::Error,
-    fs,
     path::{Path, PathBuf},
 };
 

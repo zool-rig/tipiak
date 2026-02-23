@@ -4,9 +4,15 @@ use std::collections::HashMap;
 // use crate::config::Config;
 
 #[get("/api/config/file-types")]
-pub async fn file_types() -> Result<HashMap<String, Vec<String>>> {
+pub async fn file_types() -> Result<Vec<String>> {
     use tipiak_search_engine;
-    Ok(tipiak_search_engine::CONFIG.file_types.clone())
+    let mut file_types_names: Vec<String> = tipiak_search_engine::CONFIG
+        .file_types
+        .iter()
+        .map(|x| x.0.clone())
+        .collect();
+    file_types_names.sort_by(|a, b| a.cmp(&b));
+    Ok(file_types_names)
 }
 
 // #[get("/api/config")]

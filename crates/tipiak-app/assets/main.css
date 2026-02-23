@@ -1,8 +1,7 @@
-@import url('https://fonts.cdnfonts.com/css/public-pixel');
-
 body {    
     background-color: #2b2a33;
     color: #e1e1e5;
+    font-family: 'Courier New', Courier, monospace;
 }
 
 .home {
@@ -26,7 +25,7 @@ body {
 
 .title {
     font-size: 2rem;
-    font-family: "Public Pixel", sans-serif;
+    font-family: "PublicPixel";
 }
 
 .search-container {
@@ -137,4 +136,42 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    gap: 4px;
+}
+
+.search-result-viewport{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 1rem;
+}
+
+.separator {
+    padding-top: 10px;
+    margin-top: 10px;
+    width: 100%;
+    border-top: 1px solid #42414d;
+}
+
+.file {
+    background-color: #24242c;
+    padding-inline: 15px;
+    padding-bottom: 10px;
+    border-radius: 8px;
+}
+
+.file-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.file-preview {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.img-preview {
+    max-width: 500px;
+    max-height: 500px;
 }

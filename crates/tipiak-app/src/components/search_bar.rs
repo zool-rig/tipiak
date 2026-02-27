@@ -93,6 +93,11 @@ pub fn SearchBar(mut props: SearchBarProps) -> Element {
                                 props.on_submit.call(());
                             }
                         },
+                        Key::Escape => {
+                            if show_dropdown() {
+                                show_dropdown.set(false)
+                            }
+                        }
                         Key::ArrowDown => {
                             evt.prevent_default();
                             if !suggestions().is_empty() {

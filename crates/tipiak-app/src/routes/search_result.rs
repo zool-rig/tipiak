@@ -10,15 +10,18 @@ use crate::utils::{decode_filters, encode_filters};
 
 #[component]
 pub fn SearchResult(pattern: String, filters: String) -> Element {
-    let pattern_clone = pattern.clone();
-    let filters_clone = filters.clone();
-    let matching_files = use_resource(move || {
-        let pattern = pattern_clone.clone();
-        let filters = filters_clone.clone();
-        async move { search(pattern, decode_filters(&filters)).await }
-    });
-    let pattern_signal = use_signal(|| pattern);
+    let pattern_signal = use_signal(|| pattern.clone());
     let filters_signal = use_signal(|| decode_filters(&filters));
+
+    let mut submitted_pattern = use_signal(|| pattern.clone());
+    let mut submitted_filters = use_signal(|| decode_filters(&filters));
+
+    let matching_files = use_resource(move || {
+        let pattern = submitted_pattern();
+        let filters = submitted_filters();
+        async move { search(pattern.trim().to_string(), filters).await }
+    });
+
     let navigator = use_navigator();
 
     rsx! {
@@ -31,10 +34,12 @@ pub fn SearchResult(pattern: String, filters: String) -> Element {
             SearchBar {
                 pattern: pattern_signal,
                 on_submit: move |_| {
-                    navigator.push(
+                    submitted_pattern.set(pattern_signal().trim().to_string());
+                    submitted_filters.set(filters_signal());
+                    navigator.replace(
                         Route::SearchResult {
-                            pattern: pattern_signal().trim().to_string(),
-                            filters: encode_filters(&filters_signal())
+                            pattern: submitted_pattern().trim().to_string(),
+                            filters: encode_filters(&submitted_filters())
                         }
                     );
                 }
@@ -52,8 +57,8 @@ pub fn SearchResult(pattern: String, filters: String) -> Element {
                         }
                     }
                 },
-                Some(Err(e)) => rsx! {
-                    div { "Failed to load files {e}" }
+                Some(Err(_)) => rsx! {
+                    div { "Failed to load files" }
                 },
                 None => rsx! { "Loading files..." }
             }

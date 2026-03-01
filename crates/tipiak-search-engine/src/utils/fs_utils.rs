@@ -34,3 +34,7 @@ pub fn is_audio_file(path: &Path) -> bool {
 pub fn is_mp3_file(path: &Path) -> bool {
     is_file_type(path, vec!["mp3"])
 }
+
+pub fn is_zim_file(path: &Path) -> bool {
+    is_file_type(path, vec!["zim"])
+}

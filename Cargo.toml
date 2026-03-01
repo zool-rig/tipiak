@@ -2,6 +2,6 @@
 members = ["crates/tipiak-cli",
     "crates/tipiak-search-engine",
     "crates/tipiak-cli"
-, "crates/tipiak-app", "crates/tipiak-app"]
+, "crates/tipiak-app"]
 
 resolver = "3"

@@ -3,6 +3,7 @@ use std::{
     fs,
     io::{self, BufRead},
     path::Path,
+    error::Error,
 };
 
 use crate::tokenizers::tokenizer::Tokenizer;
@@ -18,7 +19,7 @@ impl Tokenizer for ParagraphTokenizer {
         is_markdown_file(path)
     }
 
-    fn tokenize(&self, path: &Path) -> Result<Vec<String>, Box<dyn std::error::Error>> {
+    fn tokenize(&self, path: &Path) -> Result<Vec<String>, Box<dyn Error>> {
         let file = fs::File::open(path)?;
         let buffer = io::BufReader::new(file);
 

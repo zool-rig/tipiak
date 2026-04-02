@@ -6,10 +6,9 @@ use std::{
     path::Path,
 };
 
-use crate::extend_metadata_field;
-use crate::metadata::extractor::MetadataExtractor;
-use crate::metadata::media_metadata::MediaMetadata;
+use crate::tokenizers::tokenizer::Tokenizer;
 use crate::utils::fs_utils::is_image_file;
+use crate::utils::token_utils::{is_valid_token, sanitize_word};
 
 fn extract_xmp_streaming(path: &Path) -> Option<String> {
     let file = File::open(path).ok()?;
@@ -42,19 +41,20 @@ fn extract_xmp_streaming(path: &Path) -> Option<String> {
     None
 }
 
-pub struct XmpMetadataExtractor;
+pub struct XmpTokenizer;
 
-impl MetadataExtractor for XmpMetadataExtractor {
+impl Tokenizer for XmpTokenizer {
     fn supports(&self, path: &Path) -> bool {
         is_image_file(path)
     }
 
-    fn extract(&self, path: &Path) -> Result<Option<MediaMetadata>, Box<dyn Error>> {
+    fn tokenize(&self, path: &Path) -> Result<Vec<String>, Box<dyn Error>> {
+        let mut tokens: Vec<String> = Vec::new();
+
         if let Some(raw_xmp) = extract_xmp_streaming(path) {
             let mut reader = Reader::from_str(&raw_xmp);
             reader.config_mut().trim_text(true);
 
-            let mut metadata = MediaMetadata::default();
             let mut buf = Vec::new();
             let mut current_tag: Option<String> = None;
             let mut tag_stack: Vec<String> = Vec::new();
@@ -76,24 +76,24 @@ impl MetadataExtractor for XmpMetadataExtractor {
 
                         match current_tag.as_deref() {
                             Some("photoshop:Headline") => {
-                                extend_metadata_field!(metadata, title, text);
+                                tokens.extend(
+                                    text.split_whitespace()
+                                        .filter(is_valid_token)
+                                        .map(sanitize_word),
+                                );
                             }
                             Some("rdf:li") => {
                                 if let Some(parent) =
                                     tag_stack.get(tag_stack.len().saturating_sub(3))
                                 {
                                     match parent.as_str() {
-                                        "dc:title" => {
-                                            extend_metadata_field!(metadata, title, text);
-                                        }
-                                        "dc:description" => {
-                                            extend_metadata_field!(metadata, description, text);
-                                        }
-                                        "dc:subject" => {
-                                            extend_metadata_field!(metadata, tags, text);
-                                        }
-                                        "dc:creator" => {
-                                            extend_metadata_field!(metadata, author, text);
+                                        "dc:title" | "dc:description" | "dc:subject"
+                                        | "dc:creator" => {
+                                            tokens.extend(
+                                                text.split_whitespace()
+                                                    .filter(is_valid_token)
+                                                    .map(sanitize_word),
+                                            );
                                         }
                                         _ => (),
                                     }
@@ -107,14 +107,8 @@ impl MetadataExtractor for XmpMetadataExtractor {
                 }
                 buf.clear();
             }
-
-            return Ok(if !metadata.is_null() {
-                Some(metadata)
-            } else {
-                None
-            });
         }
 
-        Ok(None)
+        Ok(tokens)
     }
 }

@@ -2,7 +2,6 @@ mod config;
 mod constants;
 mod crawler;
 mod db;
-mod metadata;
 mod models;
 mod searcher;
 mod tokenizers;

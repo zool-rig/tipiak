@@ -1,9 +1,8 @@
 use std::{error::Error, fs, io, path::Path};
 
-use crate::metadata::extractor::MetadataExtractor;
-use crate::metadata::media_metadata::MediaMetadata;
+use crate::tokenizers::tokenizer::Tokenizer;
 use crate::utils::fs_utils::is_image_file;
-use crate::utils::token_utils::{is_indexable_human_text, sanitize_words};
+use crate::utils::token_utils::{is_indexable_human_text, is_valid_token, sanitize_word};
 
 fn hex_string_to_bytes(s: &str) -> Option<Vec<u8>> {
     let s = s.strip_prefix("0x")?;
@@ -40,34 +39,31 @@ fn user_comment_to_string(raw: &[u8]) -> Option<String> {
     }
 }
 
-pub struct ExifMetadataExtractor;
+pub struct ExifTokenizer;
 
-impl MetadataExtractor for ExifMetadataExtractor {
+impl Tokenizer for ExifTokenizer {
     fn supports(&self, path: &Path) -> bool {
         is_image_file(path)
     }
 
-    fn extract(&self, path: &Path) -> Result<Option<MediaMetadata>, Box<dyn Error>> {
+    fn tokenize(&self, path: &Path) -> Result<Vec<String>, Box<dyn Error>> {
+        let mut tokens: Vec<String> = Vec::new();
+
         let file = fs::File::open(path)?;
         let mut bufreader = io::BufReader::new(&file);
         let exifreader = exif::Reader::new();
         let exif = exifreader.read_from_container(&mut bufreader)?;
 
-        let mut metadata = MediaMetadata::default();
-
         for f in exif.fields() {
             match f.tag {
-                exif::Tag::ImageDescription => {
-                    let value = sanitize_words(&f.display_value().with_unit(&exif).to_string());
-                    if !value.is_empty() {
-                        metadata.title = Some(value);
-                    }
-                }
-                exif::Tag::Artist => {
-                    let value = sanitize_words(&f.display_value().with_unit(&exif).to_string());
-                    if !value.is_empty() {
-                        metadata.author = Some(value);
-                    }
+                exif::Tag::ImageDescription | exif::Tag::Artist => {
+                    let value = &f.display_value().with_unit(&exif).to_string();
+                    tokens.extend(
+                        value
+                            .split_whitespace()
+                            .filter(is_valid_token)
+                            .map(sanitize_word),
+                    );
                 }
                 exif::Tag::UserComment => {
                     let value = f.display_value().with_unit(&exif).to_string();
@@ -76,20 +72,18 @@ impl MetadataExtractor for ExifMetadataExtractor {
                         && let Some(decoded_value) = user_comment_to_string(&b)
                         && is_indexable_human_text(&decoded_value)
                     {
-                        let sanitized_value = sanitize_words(&decoded_value);
-                        if !sanitized_value.is_empty() {
-                            metadata.description = Some(sanitized_value);
-                        }
+                        tokens.extend(
+                            decoded_value
+                                .split_whitespace()
+                                .filter(is_valid_token)
+                                .map(sanitize_word),
+                        );
                     }
                 }
                 _ => (),
             }
         }
 
-        Ok(if !metadata.is_null() {
-            Some(metadata)
-        } else {
-            None
-        })
+        Ok(tokens)
     }
 }

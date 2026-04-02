@@ -32,11 +32,3 @@ pub fn is_indexable_human_text(s: &str) -> bool {
 pub fn sanitize_word(word: &str) -> String {
     word.replace(|c: char| !c.is_alphanumeric(), "")
 }
-
-pub fn sanitize_words(words: &str) -> String {
-    words
-        .split_whitespace()
-        .map(sanitize_word)
-        .collect::<Vec<String>>()
-        .join(" ")
-}

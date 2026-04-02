@@ -1,9 +1,9 @@
 use std::{
     collections::HashSet,
+    error::Error,
     fs,
     io::{self, BufRead},
     path::Path,
-    error::Error,
 };
 
 use crate::tokenizers::tokenizer::Tokenizer;

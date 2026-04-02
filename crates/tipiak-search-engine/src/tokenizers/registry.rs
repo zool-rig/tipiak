@@ -1,9 +1,10 @@
 use std::{collections::HashSet, error::Error, path::Path};
 
 use crate::tokenizers::{
-    file_name_tokenizer::FileNameTokenizer, metadata_tokenizer::MetadataTokenizer,
+    exif_tokenizer::ExifTokenizer, file_name_tokenizer::FileNameTokenizer,
+    id3_tokenizer::Id3Tokenizer, iptc_tokenizer::IptcTokenizer,
     paragraph_tokenizer::ParagraphTokenizer, title_tokenizer::MarkdownTitleTokenizer,
-    tokenizer::Tokenizer, zim_tokenizer::ZimTokenizer,
+    tokenizer::Tokenizer, xmp_tokenizer::XmpTokenizer, zim_tokenizer::ZimTokenizer,
 };
 use crate::utils::token_utils::sanitize_word;
 
@@ -18,7 +19,10 @@ impl TokenizerRegistry {
                 Box::new(FileNameTokenizer),
                 Box::new(ParagraphTokenizer),
                 Box::new(MarkdownTitleTokenizer),
-                Box::new(MetadataTokenizer),
+                Box::new(Id3Tokenizer),
+                Box::new(ExifTokenizer),
+                Box::new(IptcTokenizer),
+                Box::new(XmpTokenizer),
                 Box::new(ZimTokenizer),
             ],
         }

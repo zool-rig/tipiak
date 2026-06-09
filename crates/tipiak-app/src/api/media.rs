@@ -1,11 +1,10 @@
 use dioxus::{fullstack::FileStream, prelude::*};
 
-use crate::config::Config;
-
 #[get("/api/media/:id")]
 pub async fn media(id: i64) -> Result<FileStream, ServerFnError> {
     use std::path::Path;
     use tipiak_search_engine;
+    use crate::config::Config;
 
     match Config::new() {
         Ok(config) => {

@@ -2,7 +2,6 @@ use std::path::Path;
 
 const MARKDOWN_FILES_EXTENSIONS: [&str; 2] = ["txt", "md"];
 const IMAGE_FILES_EXTENSIONS: [&str; 6] = ["tiff", "jpeg", "jpg", "heif", "png", "webp"];
-const AUDIO_FILES_EXTENSIONS: [&str; 2] = ["mp3", "wav"];
 const JPEG_FILES_EXTENSIONS: [&str; 2] = ["jpeg", "jpg"];
 
 fn is_file_type(path: &Path, extensions: Vec<&str>) -> bool {
@@ -25,10 +24,6 @@ pub fn is_image_file(path: &Path) -> bool {
 
 pub fn is_jpeg_file(path: &Path) -> bool {
     is_file_type(path, Vec::from(JPEG_FILES_EXTENSIONS))
-}
-
-pub fn is_audio_file(path: &Path) -> bool {
-    is_file_type(path, Vec::from(AUDIO_FILES_EXTENSIONS))
 }
 
 pub fn is_mp3_file(path: &Path) -> bool {

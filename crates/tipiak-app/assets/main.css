@@ -170,7 +170,7 @@ body {
 .file-preview {
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: top;
     height: 500px;
 }
 
@@ -183,7 +183,7 @@ body {
 .text-preview {
     max-height: 100%;
     max-width: 100%;
-    overflow:auto;
+    overflow: auto;
     border: 1px solid #42414d;
     padding: 5px;
     border-radius: 4px;

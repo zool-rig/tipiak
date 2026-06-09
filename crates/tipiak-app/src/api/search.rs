@@ -1,8 +1,6 @@
 use dioxus::prelude::*;
 use serde::{Deserialize, Serialize};
 
-use crate::config::Config;
-
 #[derive(Deserialize, Serialize, Debug, Clone, PartialEq)]
 pub struct PayloadFile {
     pub id: i64,
@@ -17,6 +15,7 @@ pub async fn search(
 ) -> Result<Vec<PayloadFile>, ServerFnError> {
     use std::path::Path;
     use tipiak_search_engine;
+    use crate::config::Config;
 
     let se_config = &tipiak_search_engine::CONFIG;
     let mut file_types_names: Vec<String> =

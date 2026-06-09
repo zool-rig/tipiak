@@ -1,7 +1,5 @@
 use dioxus::prelude::*;
 
-use crate::config::Config;
-
 #[get("/api/completion?pattern")]
 pub async fn completion(pattern: String) -> Result<Vec<String>, ServerFnError> {
     if pattern.is_empty() {
@@ -10,6 +8,7 @@ pub async fn completion(pattern: String) -> Result<Vec<String>, ServerFnError> {
 
     use std::path::Path;
     use tipiak_search_engine;
+    use crate::config::Config;
 
     match Config::new() {
         Ok(config) => match tipiak_search_engine::get_all_tokens(&Path::new(&config.storage_dir)) {

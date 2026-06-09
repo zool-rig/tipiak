@@ -39,7 +39,14 @@ pub fn FilePreview(id: i64, type_name: String) -> Element {
                             }
                         },
                         Some(None) => rsx! { p { "Failed to read file" } },
-                        None => rsx! { p { "Lorafing..." } }
+                        None => rsx! { p { "Loading..." } }
+                    }
+                },
+                "sounds" => rsx! {
+                    audio {
+                        class: "sound-preview",
+                        src: "/api/media/{id}",
+                        controls: true,
                     }
                 },
                 _ => rsx! {p { "No preview" } }

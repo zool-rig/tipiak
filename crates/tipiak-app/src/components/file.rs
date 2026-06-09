@@ -17,6 +17,12 @@ pub fn File(file: PayloadFile) -> Element {
                     height: 20
                 }
                 p { "{file.path}" }
+                a {
+                    href: "/api/media/{file.id}",
+                    download: true,
+                    rel: "external",
+                    "download"
+                }
             }
             FilePreview { id: file.id, type_name: file.type_name.clone() }
         }

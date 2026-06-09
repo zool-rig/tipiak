@@ -1,7 +1,9 @@
 [workspace]
-members = ["crates/tipiak-cli",
+members = [
+    "crates/tipiak-cli",
     "crates/tipiak-search-engine",
-    "crates/tipiak-cli"
-, "crates/tipiak-app"]
+    "crates/tipiak-app",
+    "crates/libzim-rs",
+]
 
 resolver = "3"

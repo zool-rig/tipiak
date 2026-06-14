@@ -8,7 +8,7 @@ use std::{
 
 use crate::tokenizers::tokenizer::Tokenizer;
 use crate::utils::fs_utils::is_markdown_file;
-use crate::utils::token_utils::is_valid_token;
+use crate::utils::token_utils::tokenize_string;
 
 const TOKEN_LIMIT: usize = 10;
 
@@ -19,21 +19,17 @@ impl Tokenizer for ParagraphTokenizer {
         is_markdown_file(path)
     }
 
-    fn tokenize(&self, path: &Path) -> Result<Vec<String>, Box<dyn Error>> {
+    fn tokenize(&self, path: &Path) -> Result<HashSet<String>, Box<dyn Error>> {
         let file = fs::File::open(path)?;
         let buffer = io::BufReader::new(file);
 
         let mut tokens: HashSet<String> = HashSet::new();
 
         for line in buffer.lines().map_while(Result::ok) {
-            for word in line.split_whitespace() {
-                if is_valid_token(&word) {
-                    tokens.insert(word.to_string());
-                }
-                if tokens.len() == TOKEN_LIMIT {
-                    break;
-                }
+            if tokens.len() >= TOKEN_LIMIT {
+                break;
             }
+            tokens.extend(tokenize_string(line));                
         }
         Ok(tokens.into_iter().collect())
     }

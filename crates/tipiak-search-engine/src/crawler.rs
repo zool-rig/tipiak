@@ -8,7 +8,7 @@ use std::{
 };
 use walkdir::WalkDir;
 
-use crate::config::CONFIG;
+use crate::config::get_config;
 use crate::constants::DB_NAME;
 use crate::db::queries::{
     CREATE_FILE_TYPES_TABLE_QUERY, CREATE_FILES_TABLE_QUERY, CREATE_TOKENS_TABLE_QUERY,
@@ -18,7 +18,7 @@ use crate::tokenizers::registry::TokenizerRegistry;
 use crate::utils::db_utils::{connect, get_db_path};
 
 fn get_file_type_from_ext(ext: String) -> Option<String> {
-    for (key, value) in CONFIG.file_types.iter() {
+    for (key, value) in get_config().file_types.iter() {
         if value.contains(&ext.to_lowercase()) {
             return Some(key.clone());
         }
@@ -52,7 +52,7 @@ pub fn crawl(root_dir: &Path) -> Result<(), Box<dyn Error>> {
     let tx = conn.transaction()?;
     {
         let mut stmt = tx.prepare(INSERT_FILE_TYPES_QUERY)?;
-        for file_type in CONFIG.file_types.keys() {
+        for file_type in get_config().file_types.keys() {
             stmt.execute([file_type])?;
         }
     }

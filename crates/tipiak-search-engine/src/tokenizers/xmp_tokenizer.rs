@@ -4,11 +4,12 @@ use std::{
     fs::File,
     io::{BufReader, Read},
     path::Path,
+    collections::HashSet,
 };
 
 use crate::tokenizers::tokenizer::Tokenizer;
 use crate::utils::fs_utils::is_image_file;
-use crate::utils::token_utils::{is_valid_token, sanitize_word};
+use crate::utils::token_utils::tokenize_string;
 
 fn extract_xmp_streaming(path: &Path) -> Option<String> {
     let file = File::open(path).ok()?;
@@ -48,8 +49,8 @@ impl Tokenizer for XmpTokenizer {
         is_image_file(path)
     }
 
-    fn tokenize(&self, path: &Path) -> Result<Vec<String>, Box<dyn Error>> {
-        let mut tokens: Vec<String> = Vec::new();
+    fn tokenize(&self, path: &Path) -> Result<HashSet<String>, Box<dyn Error>> {
+        let mut tokens: HashSet<String> = HashSet::new();
 
         if let Some(raw_xmp) = extract_xmp_streaming(path) {
             let mut reader = Reader::from_str(&raw_xmp);
@@ -77,9 +78,7 @@ impl Tokenizer for XmpTokenizer {
                         match current_tag.as_deref() {
                             Some("photoshop:Headline") => {
                                 tokens.extend(
-                                    text.split_whitespace()
-                                        .filter(is_valid_token)
-                                        .map(sanitize_word),
+                                    tokenize_string(text)
                                 );
                             }
                             Some("rdf:li") => {
@@ -90,9 +89,7 @@ impl Tokenizer for XmpTokenizer {
                                         "dc:title" | "dc:description" | "dc:subject"
                                         | "dc:creator" => {
                                             tokens.extend(
-                                                text.split_whitespace()
-                                                    .filter(is_valid_token)
-                                                    .map(sanitize_word),
+                                                tokenize_string(text)
                                             );
                                         }
                                         _ => (),

@@ -8,7 +8,6 @@ dyn-fmt = "0.4.3"
 id3 = "1.16.4"
 iptc = "0.3.0"
 kamadak-exif = "0.6.1"
-lazy_static = "1.5.0"
 log = "0.4.29"
 quick-xml = "0.39.0"
 regex = "1.12.3"
@@ -19,3 +18,4 @@ toml = "0.9.11"
 walkdir = "2.5.0"
 
 libzim-rs = { path = "../libzim-rs" }
+stop-words = "0.10.0"

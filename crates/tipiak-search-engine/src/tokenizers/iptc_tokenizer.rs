@@ -1,9 +1,9 @@
 use iptc::{IPTC, IPTCTag};
-use std::{error::Error, path::Path};
+use std::{error::Error, path::Path, collections::HashSet};
 
 use crate::tokenizers::tokenizer::Tokenizer;
 use crate::utils::fs_utils::is_jpeg_file;
-use crate::utils::token_utils::{is_valid_token, sanitize_word};
+use crate::utils::token_utils::tokenize_string;
 
 pub struct IptcTokenizer;
 
@@ -12,8 +12,8 @@ impl Tokenizer for IptcTokenizer {
         is_jpeg_file(path)
     }
 
-    fn tokenize(&self, path: &Path) -> Result<Vec<String>, Box<dyn Error>> {
-        let mut tokens: Vec<String> = Vec::new();
+    fn tokenize(&self, path: &Path) -> Result<HashSet<String>, Box<dyn Error>> {
+        let mut tokens: HashSet<String> = HashSet::new();
         let iptc = IPTC::read_from_path(path)?;
 
         for (tag, value) in iptc.get_all() {
@@ -32,9 +32,9 @@ impl Tokenizer for IptcTokenizer {
                 | IPTCTag::Credit => {
                     tokens.extend(
                         value
-                            .iter()
-                            .filter(|w| is_valid_token(&w.as_str()))
-                            .map(|w| sanitize_word(w)),
+                            .into_iter()
+                            .map(tokenize_string)
+                            .flatten(),
                     );
                 }
                 _ => (),

@@ -1,8 +1,8 @@
-use std::{error::Error, fs, io, path::Path};
+use std::{error::Error, fs, io, path::Path, collections::HashSet};
 
 use crate::tokenizers::tokenizer::Tokenizer;
 use crate::utils::fs_utils::is_image_file;
-use crate::utils::token_utils::{is_indexable_human_text, is_valid_token, sanitize_word};
+use crate::utils::token_utils::tokenize_string;
 
 fn hex_string_to_bytes(s: &str) -> Option<Vec<u8>> {
     let s = s.strip_prefix("0x")?;
@@ -46,8 +46,8 @@ impl Tokenizer for ExifTokenizer {
         is_image_file(path)
     }
 
-    fn tokenize(&self, path: &Path) -> Result<Vec<String>, Box<dyn Error>> {
-        let mut tokens: Vec<String> = Vec::new();
+    fn tokenize(&self, path: &Path) -> Result<HashSet<String>, Box<dyn Error>> {
+        let mut tokens: HashSet<String> = HashSet::new();
 
         let file = fs::File::open(path)?;
         let mut bufreader = io::BufReader::new(&file);
@@ -59,10 +59,7 @@ impl Tokenizer for ExifTokenizer {
                 exif::Tag::ImageDescription | exif::Tag::Artist => {
                     let value = &f.display_value().with_unit(&exif).to_string();
                     tokens.extend(
-                        value
-                            .split_whitespace()
-                            .filter(is_valid_token)
-                            .map(sanitize_word),
+                        tokenize_string(value.to_owned())
                     );
                 }
                 exif::Tag::UserComment => {
@@ -70,13 +67,9 @@ impl Tokenizer for ExifTokenizer {
                     let bytes = hex_string_to_bytes(&value);
                     if let Some(b) = bytes
                         && let Some(decoded_value) = user_comment_to_string(&b)
-                        && is_indexable_human_text(&decoded_value)
                     {
                         tokens.extend(
-                            decoded_value
-                                .split_whitespace()
-                                .filter(is_valid_token)
-                                .map(sanitize_word),
+                            tokenize_string(decoded_value)
                         );
                     }
                 }

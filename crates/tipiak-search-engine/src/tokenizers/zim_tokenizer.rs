@@ -1,10 +1,10 @@
-use std::{error::Error, path::Path};
+use std::{error::Error, path::Path, collections::HashSet};
 
 use libzim_rs::parse_zim;
 
 use crate::tokenizers::tokenizer::Tokenizer;
 use crate::utils::fs_utils::is_zim_file;
-use crate::utils::token_utils::{is_valid_token, sanitize_word};
+use crate::utils::token_utils::tokenize_string;
 
 const METADATA_KEYS: &'static [&str] = &[
     "Creator",
@@ -21,8 +21,8 @@ impl Tokenizer for ZimTokenizer {
         is_zim_file(path)
     }
 
-    fn tokenize(&self, path: &Path) -> Result<Vec<String>, Box<dyn Error>> {
-        let mut tokens: Vec<String> = Vec::new();
+    fn tokenize(&self, path: &Path) -> Result<HashSet<String>, Box<dyn Error>> {
+        let mut tokens: HashSet<String> = HashSet::new();
         
         let zim_file = parse_zim(&path.display().to_string())?;
 
@@ -33,20 +33,10 @@ impl Tokenizer for ZimTokenizer {
 
             match zim_file.get_metadata_str(&key) {
                 Some(value) => {
-                    println!("{:?}", value);
                     tokens.extend(
-                    value
-                    .split_whitespace()
-                    .map(|t| t.split(";"))
-                    .flatten()
-                    .filter(|t| !t.starts_with("_"))
-                    .map(|t| t.split("_"))
-                    .flatten()
-                    .map(|t| t.split("-"))
-                    .flatten()
-                    .filter(is_valid_token)
-                    .map(sanitize_word)
-                )},
+                        tokenize_string(value)
+                    )
+                },
                 None => continue
             }
         }

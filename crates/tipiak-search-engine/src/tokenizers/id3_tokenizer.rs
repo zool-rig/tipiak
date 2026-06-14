@@ -1,9 +1,9 @@
 use id3::{Tag, TagLike};
-use std::{error::Error, path::Path};
+use std::{error::Error, path::Path, collections::HashSet};
 
 use crate::tokenizers::tokenizer::Tokenizer;
 use crate::utils::fs_utils::is_mp3_file;
-use crate::utils::token_utils::{is_valid_token, sanitize_word};
+use crate::utils::token_utils::tokenize_string;
 
 pub struct Id3Tokenizer;
 
@@ -12,43 +12,31 @@ impl Tokenizer for Id3Tokenizer {
         is_mp3_file(path)
     }
 
-    fn tokenize(&self, path: &Path) -> Result<Vec<String>, Box<dyn Error>> {
-        let mut tokens: Vec<String> = Vec::new();
+    fn tokenize(&self, path: &Path) -> Result<HashSet<String>, Box<dyn Error>> {
+        let mut tokens: HashSet<String> = HashSet::new();
         let tags = Tag::read_from_path(path)?;
 
         if let Some(artist) = tags.artist() {
             tokens.extend(
-                artist
-                    .split_whitespace()
-                    .filter(is_valid_token)
-                    .map(sanitize_word),
+               tokenize_string(artist.to_owned())
             );
         }
 
         if let Some(title) = tags.title() {
             tokens.extend(
-                title
-                    .split_whitespace()
-                    .filter(is_valid_token)
-                    .map(sanitize_word),
+                tokenize_string(title.to_owned())
             );
         }
 
         if let Some(album) = tags.album() {
             tokens.extend(
-                album
-                    .split_whitespace()
-                    .filter(is_valid_token)
-                    .map(sanitize_word),
+                tokenize_string(album.to_owned())
             );
         }
 
         if let Some(genre) = tags.genre() {
             tokens.extend(
-                genre
-                    .split_whitespace()
-                    .filter(is_valid_token)
-                    .map(sanitize_word),
+                tokenize_string(genre.to_owned())
             );
         }
 

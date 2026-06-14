@@ -1,8 +1,9 @@
-use lazy_static::lazy_static;
 use serde::Deserialize;
-use std::{self, collections::HashMap, error::Error, fs, path::PathBuf};
+use std::{self, collections::HashMap, error::Error, fs, path::PathBuf, sync::OnceLock};
 
 use crate::constants::{CONFIG_NAME, CONFIG_PATH_ENV_KEY};
+
+static CONFIG: OnceLock<Config> = OnceLock::new();
 
 #[derive(Deserialize, Debug)]
 pub struct Config {
@@ -84,6 +85,8 @@ impl Config {
     }
 }
 
-lazy_static! {
-    pub static ref CONFIG: Config = Config::new().expect("Failed to get global config");
+pub fn get_config() -> &'static Config {
+    CONFIG.get_or_init(|| {
+        Config::new().expect("Failed to get global config")
+    })
 }

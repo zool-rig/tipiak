@@ -8,7 +8,7 @@ use std::{
 };
 
 use crate::tokenizers::tokenizer::Tokenizer;
-use crate::utils::fs_utils::is_image_file;
+use crate::utils::fs_utils::is_file_type;
 use crate::utils::token_utils::tokenize_string;
 
 fn extract_xmp_streaming(path: &Path) -> Option<String> {
@@ -46,7 +46,7 @@ pub struct XmpTokenizer;
 
 impl Tokenizer for XmpTokenizer {
     fn supports(&self, path: &Path) -> bool {
-        is_image_file(path)
+        is_file_type(path, vec!["tiff", "jpeg", "jpg", "heif", "png", "webp", "mp4", "mov"])
     }
 
     fn tokenize(&self, path: &Path, _root_dir: &Path) -> Result<HashSet<String>, Box<dyn Error>> {

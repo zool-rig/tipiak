@@ -3,7 +3,7 @@ use std::io::BufRead;
 use std::{collections::HashSet, fs, io, path::Path, sync::OnceLock};
 
 use crate::tokenizers::tokenizer::Tokenizer;
-use crate::utils::fs_utils::is_markdown_file;
+use crate::utils::fs_utils::is_file_type;
 use crate::utils::token_utils::tokenize_string;
 
 static MD_TITLE_EXPR: OnceLock<Regex> = OnceLock::new();
@@ -16,7 +16,7 @@ pub struct MarkdownTitleTokenizer;
 
 impl Tokenizer for MarkdownTitleTokenizer {
     fn supports(&self, path: &Path) -> bool {
-        is_markdown_file(path)
+        is_file_type(path, vec!["txt", "md"])
     }
 
     fn tokenize(&self, path: &Path, _root_dir: &Path) -> Result<HashSet<String>, Box<dyn std::error::Error>> {

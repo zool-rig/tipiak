@@ -115,7 +115,7 @@ pub fn crawl(root_dir: &Path, reset: bool) -> Result<(), Box<dyn Error>> {
     let registry = TokenizerRegistry::new(root_dir);
 
     for task in files_to_tokenize {
-        let tokens = registry.tokenize(&task.path)?;
+        let tokens: Vec<String> = registry.tokenize(&task.path)?.into_iter().collect();
         if tokens.is_empty() {
             warn!("No tokens found for {:?}", task.path);
             continue;

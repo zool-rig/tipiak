@@ -2,14 +2,14 @@ use iptc::{IPTC, IPTCTag};
 use std::{collections::HashSet, error::Error, path::Path};
 
 use crate::tokenizers::tokenizer::Tokenizer;
-use crate::utils::fs_utils::is_jpeg_file;
+use crate::utils::fs_utils::is_file_type;
 use crate::utils::token_utils::tokenize_string;
 
 pub struct IptcTokenizer;
 
 impl Tokenizer for IptcTokenizer {
     fn supports(&self, path: &Path) -> bool {
-        is_jpeg_file(path)
+        is_file_type(path, vec!["jpeg", "jpg"])
     }
 
     fn tokenize(&self, path: &Path, _root_dir: &Path) -> Result<HashSet<String>, Box<dyn Error>> {

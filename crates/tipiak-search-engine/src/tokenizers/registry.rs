@@ -1,4 +1,4 @@
-use std::{error::Error, path::{Path, PathBuf}};
+use std::{error::Error, path::{Path, PathBuf}, collections::HashSet};
 use rayon::prelude::*;
 
 use crate::tokenizers::{
@@ -30,7 +30,7 @@ impl TokenizerRegistry {
         }
     }
 
-    pub fn tokenize(&self, path: &Path) -> Result<Vec<String>, Box<dyn Error>> {
+    pub fn tokenize(&self, path: &Path) -> Result<HashSet<String>, Box<dyn Error>> {
         Ok(self
             .tokenizers
             .par_iter()

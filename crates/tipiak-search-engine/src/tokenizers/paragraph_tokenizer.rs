@@ -7,7 +7,7 @@ use std::{
 };
 
 use crate::tokenizers::tokenizer::Tokenizer;
-use crate::utils::fs_utils::is_markdown_file;
+use crate::utils::fs_utils::is_file_type;
 use crate::utils::token_utils::tokenize_string;
 
 const TOKEN_LIMIT: usize = 10;
@@ -16,7 +16,7 @@ pub struct ParagraphTokenizer;
 
 impl Tokenizer for ParagraphTokenizer {
     fn supports(&self, path: &Path) -> bool {
-        is_markdown_file(path)
+        is_file_type(path, vec!["txt", "md"])
     }
 
     fn tokenize(&self, path: &Path, _root_dir: &Path) -> Result<HashSet<String>, Box<dyn Error>> {

@@ -3,7 +3,7 @@ use std::{collections::HashSet, error::Error, path::Path};
 use libzim_rs::parse_zim;
 
 use crate::tokenizers::tokenizer::Tokenizer;
-use crate::utils::fs_utils::is_zim_file;
+use crate::utils::fs_utils::is_file_type;
 use crate::utils::token_utils::tokenize_string;
 
 const METADATA_KEYS: &'static [&str] = &["Creator", "Description", "Name", "Tags", "Title"];
@@ -12,7 +12,7 @@ pub struct ZimTokenizer;
 
 impl Tokenizer for ZimTokenizer {
     fn supports(&self, path: &Path) -> bool {
-        is_zim_file(path)
+        is_file_type(path, vec!["zim"])
     }
 
     fn tokenize(&self, path: &Path, _root_dir: &Path) -> Result<HashSet<String>, Box<dyn Error>> {

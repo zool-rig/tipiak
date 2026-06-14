@@ -1,7 +1,7 @@
 use std::{collections::HashSet, error::Error, fs, io, path::Path};
 
 use crate::tokenizers::tokenizer::Tokenizer;
-use crate::utils::fs_utils::is_image_file;
+use crate::utils::fs_utils::is_file_type;
 use crate::utils::token_utils::tokenize_string;
 
 fn hex_string_to_bytes(s: &str) -> Option<Vec<u8>> {
@@ -43,7 +43,7 @@ pub struct ExifTokenizer;
 
 impl Tokenizer for ExifTokenizer {
     fn supports(&self, path: &Path) -> bool {
-        is_image_file(path)
+        is_file_type(path, vec!["tiff", "jpeg", "jpg", "heif", "png", "webp"])
     }
 
     fn tokenize(&self, path: &Path, _root_dir: &Path) -> Result<HashSet<String>, Box<dyn Error>> {

@@ -20,3 +20,4 @@ walkdir = "2.5.0"
 libzim-rs = { path = "../libzim-rs" }
 stop-words = "0.10.0"
 rayon = "1.12.0"
+memchr = "2.7"

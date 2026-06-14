@@ -86,7 +86,5 @@ impl Config {
 }
 
 pub fn get_config() -> &'static Config {
-    CONFIG.get_or_init(|| {
-        Config::new().expect("Failed to get global config")
-    })
+    CONFIG.get_or_init(|| Config::new().expect("Failed to get global config"))
 }

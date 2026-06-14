@@ -32,15 +32,18 @@ struct CrawlTask {
     path: PathBuf,
 }
 
-pub fn crawl(root_dir: &Path) -> Result<(), Box<dyn Error>> {
+pub fn crawl(root_dir: &Path, reset: bool) -> Result<(), Box<dyn Error>> {
     let _ = SimpleLogger::new().init();
 
     let db_path = get_db_path(root_dir);
     let db_exists = db_path.exists();
+    if reset && db_exists {
+        fs::remove_file(&db_path)?;
+    }
 
     let mut conn = connect(&db_path)?;
 
-    if !db_exists {
+    if !db_exists || reset {
         let mut sql = String::from("BEGIN;");
         sql.push_str(&format!("\n{}", CREATE_FILE_TYPES_TABLE_QUERY));
         sql.push_str(&format!("\n{}", CREATE_FILES_TABLE_QUERY));
@@ -109,7 +112,7 @@ pub fn crawl(root_dir: &Path) -> Result<(), Box<dyn Error>> {
 
     info!("Found {} new files to tokenize", files_to_tokenize.len());
 
-    let registry = TokenizerRegistry::new();
+    let registry = TokenizerRegistry::new(root_dir);
 
     for task in files_to_tokenize {
         let tokens = registry.tokenize(&task.path)?;

@@ -1,10 +1,10 @@
 use quick_xml::{events::Event, reader::Reader};
 use std::{
+    collections::HashSet,
     error::Error,
     fs::File,
     io::{BufReader, Read},
     path::Path,
-    collections::HashSet,
 };
 
 use crate::tokenizers::tokenizer::Tokenizer;
@@ -49,7 +49,7 @@ impl Tokenizer for XmpTokenizer {
         is_image_file(path)
     }
 
-    fn tokenize(&self, path: &Path) -> Result<HashSet<String>, Box<dyn Error>> {
+    fn tokenize(&self, path: &Path, _root_dir: &Path) -> Result<HashSet<String>, Box<dyn Error>> {
         let mut tokens: HashSet<String> = HashSet::new();
 
         if let Some(raw_xmp) = extract_xmp_streaming(path) {
@@ -77,9 +77,7 @@ impl Tokenizer for XmpTokenizer {
 
                         match current_tag.as_deref() {
                             Some("photoshop:Headline") => {
-                                tokens.extend(
-                                    tokenize_string(text)
-                                );
+                                tokens.extend(tokenize_string(text));
                             }
                             Some("rdf:li") => {
                                 if let Some(parent) =
@@ -88,9 +86,7 @@ impl Tokenizer for XmpTokenizer {
                                     match parent.as_str() {
                                         "dc:title" | "dc:description" | "dc:subject"
                                         | "dc:creator" => {
-                                            tokens.extend(
-                                                tokenize_string(text)
-                                            );
+                                            tokens.extend(tokenize_string(text));
                                         }
                                         _ => (),
                                     }

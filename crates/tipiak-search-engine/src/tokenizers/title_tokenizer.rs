@@ -1,6 +1,6 @@
 use regex::Regex;
 use std::io::BufRead;
-use std::{fs, io, path::Path, sync::OnceLock, collections::HashSet};
+use std::{collections::HashSet, fs, io, path::Path, sync::OnceLock};
 
 use crate::tokenizers::tokenizer::Tokenizer;
 use crate::utils::fs_utils::is_markdown_file;
@@ -9,9 +9,7 @@ use crate::utils::token_utils::tokenize_string;
 static MD_TITLE_EXPR: OnceLock<Regex> = OnceLock::new();
 
 fn get_md_title_expr() -> &'static Regex {
-    MD_TITLE_EXPR.get_or_init(|| {
-        Regex::new(r"#{1,3}\s*(\w+)").expect("Failed to compile regex")
-    })
+    MD_TITLE_EXPR.get_or_init(|| Regex::new(r"#{1,3}\s*(\w+)").expect("Failed to compile regex"))
 }
 
 pub struct MarkdownTitleTokenizer;
@@ -21,7 +19,7 @@ impl Tokenizer for MarkdownTitleTokenizer {
         is_markdown_file(path)
     }
 
-    fn tokenize(&self, path: &Path) -> Result<HashSet<String>, Box<dyn std::error::Error>> {
+    fn tokenize(&self, path: &Path, _root_dir: &Path) -> Result<HashSet<String>, Box<dyn std::error::Error>> {
         let file = fs::File::open(path)?;
         let buffer = io::BufReader::new(file);
         let md_title_expr = get_md_title_expr();

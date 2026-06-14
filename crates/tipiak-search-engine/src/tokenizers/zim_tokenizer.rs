@@ -1,4 +1,4 @@
-use std::{error::Error, path::Path, collections::HashSet};
+use std::{collections::HashSet, error::Error, path::Path};
 
 use libzim_rs::parse_zim;
 
@@ -6,13 +6,7 @@ use crate::tokenizers::tokenizer::Tokenizer;
 use crate::utils::fs_utils::is_zim_file;
 use crate::utils::token_utils::tokenize_string;
 
-const METADATA_KEYS: &'static [&str] = &[
-    "Creator",
-    "Description",
-    "Name",
-    "Tags",
-    "Title",
-];
+const METADATA_KEYS: &'static [&str] = &["Creator", "Description", "Name", "Tags", "Title"];
 
 pub struct ZimTokenizer;
 
@@ -21,9 +15,9 @@ impl Tokenizer for ZimTokenizer {
         is_zim_file(path)
     }
 
-    fn tokenize(&self, path: &Path) -> Result<HashSet<String>, Box<dyn Error>> {
+    fn tokenize(&self, path: &Path, _root_dir: &Path) -> Result<HashSet<String>, Box<dyn Error>> {
         let mut tokens: HashSet<String> = HashSet::new();
-        
+
         let zim_file = parse_zim(&path.display().to_string())?;
 
         for key in zim_file.metadata_keys() {
@@ -32,12 +26,8 @@ impl Tokenizer for ZimTokenizer {
             }
 
             match zim_file.get_metadata_str(&key) {
-                Some(value) => {
-                    tokens.extend(
-                        tokenize_string(value)
-                    )
-                },
-                None => continue
+                Some(value) => tokens.extend(tokenize_string(value)),
+                None => continue,
             }
         }
 

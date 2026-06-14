@@ -19,7 +19,7 @@ impl Tokenizer for ParagraphTokenizer {
         is_markdown_file(path)
     }
 
-    fn tokenize(&self, path: &Path) -> Result<HashSet<String>, Box<dyn Error>> {
+    fn tokenize(&self, path: &Path, _root_dir: &Path) -> Result<HashSet<String>, Box<dyn Error>> {
         let file = fs::File::open(path)?;
         let buffer = io::BufReader::new(file);
 
@@ -29,7 +29,7 @@ impl Tokenizer for ParagraphTokenizer {
             if tokens.len() >= TOKEN_LIMIT {
                 break;
             }
-            tokens.extend(tokenize_string(line));                
+            tokens.extend(tokenize_string(line));
         }
         Ok(tokens.into_iter().collect())
     }

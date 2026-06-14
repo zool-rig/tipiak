@@ -1,4 +1,4 @@
-use std::{error::Error, fs, io, path::Path, collections::HashSet};
+use std::{collections::HashSet, error::Error, fs, io, path::Path};
 
 use crate::tokenizers::tokenizer::Tokenizer;
 use crate::utils::fs_utils::is_image_file;
@@ -46,7 +46,7 @@ impl Tokenizer for ExifTokenizer {
         is_image_file(path)
     }
 
-    fn tokenize(&self, path: &Path) -> Result<HashSet<String>, Box<dyn Error>> {
+    fn tokenize(&self, path: &Path, _root_dir: &Path) -> Result<HashSet<String>, Box<dyn Error>> {
         let mut tokens: HashSet<String> = HashSet::new();
 
         let file = fs::File::open(path)?;
@@ -58,9 +58,7 @@ impl Tokenizer for ExifTokenizer {
             match f.tag {
                 exif::Tag::ImageDescription | exif::Tag::Artist => {
                     let value = &f.display_value().with_unit(&exif).to_string();
-                    tokens.extend(
-                        tokenize_string(value.to_owned())
-                    );
+                    tokens.extend(tokenize_string(value.to_owned()));
                 }
                 exif::Tag::UserComment => {
                     let value = f.display_value().with_unit(&exif).to_string();
@@ -68,9 +66,7 @@ impl Tokenizer for ExifTokenizer {
                     if let Some(b) = bytes
                         && let Some(decoded_value) = user_comment_to_string(&b)
                     {
-                        tokens.extend(
-                            tokenize_string(decoded_value)
-                        );
+                        tokens.extend(tokenize_string(decoded_value));
                     }
                 }
                 _ => (),

@@ -1,22 +1,24 @@
-use std::{collections::HashSet, error::Error, path::Path};
+use std::{error::Error, path::{Path, PathBuf}};
+use rayon::prelude::*;
 
 use crate::tokenizers::{
-    exif_tokenizer::ExifTokenizer, file_name_tokenizer::FileNameTokenizer,
+    exif_tokenizer::ExifTokenizer, file_path_tokenizer::FilePathTokenizer,
     id3_tokenizer::Id3Tokenizer, iptc_tokenizer::IptcTokenizer,
     paragraph_tokenizer::ParagraphTokenizer, title_tokenizer::MarkdownTitleTokenizer,
     tokenizer::Tokenizer, xmp_tokenizer::XmpTokenizer, zim_tokenizer::ZimTokenizer,
 };
-use crate::utils::token_utils::sanitize_word;
 
 pub struct TokenizerRegistry {
+    root_dir: PathBuf,
     tokenizers: Vec<Box<dyn Tokenizer>>,
 }
 
 impl TokenizerRegistry {
-    pub fn new() -> Self {
+    pub fn new(root_dir: &Path) -> Self {
         Self {
+            root_dir: PathBuf::from(root_dir),
             tokenizers: vec![
-                Box::new(FileNameTokenizer),
+                Box::new(FilePathTokenizer),
                 Box::new(ParagraphTokenizer),
                 Box::new(MarkdownTitleTokenizer),
                 Box::new(Id3Tokenizer),
@@ -31,13 +33,10 @@ impl TokenizerRegistry {
     pub fn tokenize(&self, path: &Path) -> Result<Vec<String>, Box<dyn Error>> {
         Ok(self
             .tokenizers
-            .iter()
+            .par_iter()
             .filter(|t| t.supports(path))
-            .filter_map(|t| t.tokenize(path).ok())
+            .filter_map(|t| t.tokenize(path, &self.root_dir).ok())
             .flatten()
-            .map(|t| sanitize_word(&t.to_lowercase()))
-            .collect::<HashSet<_>>()
-            .into_iter()
             .collect())
     }
 }

@@ -1,5 +1,5 @@
 use iptc::{IPTC, IPTCTag};
-use std::{error::Error, path::Path, collections::HashSet};
+use std::{collections::HashSet, error::Error, path::Path};
 
 use crate::tokenizers::tokenizer::Tokenizer;
 use crate::utils::fs_utils::is_jpeg_file;
@@ -12,7 +12,7 @@ impl Tokenizer for IptcTokenizer {
         is_jpeg_file(path)
     }
 
-    fn tokenize(&self, path: &Path) -> Result<HashSet<String>, Box<dyn Error>> {
+    fn tokenize(&self, path: &Path, _root_dir: &Path) -> Result<HashSet<String>, Box<dyn Error>> {
         let mut tokens: HashSet<String> = HashSet::new();
         let iptc = IPTC::read_from_path(path)?;
 
@@ -30,12 +30,7 @@ impl Tokenizer for IptcTokenizer {
                 | IPTCTag::ByLine
                 | IPTCTag::ByLineTitle
                 | IPTCTag::Credit => {
-                    tokens.extend(
-                        value
-                            .into_iter()
-                            .map(tokenize_string)
-                            .flatten(),
-                    );
+                    tokens.extend(value.into_iter().map(tokenize_string).flatten());
                 }
                 _ => (),
             }

@@ -25,7 +25,7 @@ impl WatchCommand {
                             match res {
                                 Ok(event) => {
                                     if event.kind.is_create()
-                                        && let Err(e) = crawl(&path)
+                                        && let Err(e) = crawl(&path, false)
                                     {
                                         println!("Failed to crawl directory : {:?}", e);
                                     }

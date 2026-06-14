@@ -1,5 +1,5 @@
 use id3::{Tag, TagLike};
-use std::{error::Error, path::Path, collections::HashSet};
+use std::{collections::HashSet, error::Error, path::Path};
 
 use crate::tokenizers::tokenizer::Tokenizer;
 use crate::utils::fs_utils::is_mp3_file;
@@ -12,32 +12,24 @@ impl Tokenizer for Id3Tokenizer {
         is_mp3_file(path)
     }
 
-    fn tokenize(&self, path: &Path) -> Result<HashSet<String>, Box<dyn Error>> {
+    fn tokenize(&self, path: &Path, _root_dir: &Path) -> Result<HashSet<String>, Box<dyn Error>> {
         let mut tokens: HashSet<String> = HashSet::new();
         let tags = Tag::read_from_path(path)?;
 
         if let Some(artist) = tags.artist() {
-            tokens.extend(
-               tokenize_string(artist.to_owned())
-            );
+            tokens.extend(tokenize_string(artist.to_owned()));
         }
 
         if let Some(title) = tags.title() {
-            tokens.extend(
-                tokenize_string(title.to_owned())
-            );
+            tokens.extend(tokenize_string(title.to_owned()));
         }
 
         if let Some(album) = tags.album() {
-            tokens.extend(
-                tokenize_string(album.to_owned())
-            );
+            tokens.extend(tokenize_string(album.to_owned()));
         }
 
         if let Some(genre) = tags.genre() {
-            tokens.extend(
-                tokenize_string(genre.to_owned())
-            );
+            tokens.extend(tokenize_string(genre.to_owned()));
         }
 
         Ok(tokens)

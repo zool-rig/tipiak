@@ -6,7 +6,7 @@ use crate::db::queries::{SEARCH_FILES_QUERY, SELECT_FILE_TYPES_BY_NAMES_QUERY};
 use crate::models::from_row::FromRow;
 use crate::models::{file::File, file_type::FileType};
 use crate::utils::db_utils::{connect, get_db_path};
-use crate::utils::token_utils::sanitize_word;
+use crate::utils::token_utils::tokenize_string;
 
 #[derive(Debug)]
 pub struct FileTypeFilters {
@@ -46,20 +46,13 @@ pub fn search(
     input: &str,
     filters: Option<FileTypeFilters>,
 ) -> Result<Vec<File>, Box<dyn Error>> {
-    println!("{:?}", root_dir);
-    println!("{:?}", input);
-    println!("{:?}", filters);
     let db_path = get_db_path(root_dir);
 
     if !db_path.exists() {
         return Err(".db file not found".into());
     }
 
-    let inputs: Vec<String> = input
-        .split_whitespace()
-        .map(sanitize_word)
-        .filter(|w| !w.is_empty())
-        .collect();
+    let inputs: Vec<String> = tokenize_string(input.to_string()).into_iter().collect();
 
     if inputs.is_empty() {
         return Err(format!("Invalid search input : {:?}", input).into());

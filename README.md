@@ -4,4 +4,3 @@
 
 A file system search engine and browser.
 
-audiotags -> mp3, mp4, flac (osef wav)

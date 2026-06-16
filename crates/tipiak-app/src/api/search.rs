@@ -17,7 +17,7 @@ pub async fn search(
     use tipiak_search_engine;
     use crate::config::Config;
 
-    let se_config = &tipiak_search_engine::CONFIG;
+    let se_config = &tipiak_search_engine::get_config();
     let mut file_types_names: Vec<String> =
         se_config.file_types.iter().map(|x| x.0.clone()).collect();
     file_types_names.sort_by(|a, b| a.cmp(&b));

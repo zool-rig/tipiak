@@ -188,3 +188,13 @@ body {
     padding: 5px;
     border-radius: 4px;
 }
+
+.download-link {
+    color: #7974b6;
+    margin-left: auto; 
+    margin-right: 0;
+}
+
+.download-link:hover {
+    color: #a8a4d8;
+}

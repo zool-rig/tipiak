@@ -18,10 +18,11 @@ pub fn File(file: PayloadFile) -> Element {
                 }
                 p { "{file.path}" }
                 a {
-                    href: "/api/media/{file.id}",
+                    class: "download-link",
+                    href: "/api/media/download/{file.id}",
                     download: true,
                     rel: "external",
-                    "download"
+                    "Download"
                 }
             }
             FilePreview { id: file.id, type_name: file.type_name.clone() }

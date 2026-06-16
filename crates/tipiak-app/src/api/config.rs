@@ -1,12 +1,9 @@
 use dioxus::prelude::*;
-use std::collections::HashMap;
-
-// use crate::config::Config;
 
 #[get("/api/config/file-types")]
 pub async fn file_types() -> Result<Vec<String>> {
     use tipiak_search_engine;
-    let mut file_types_names: Vec<String> = tipiak_search_engine::CONFIG
+    let mut file_types_names: Vec<String> = tipiak_search_engine::get_config()
         .file_types
         .iter()
         .map(|x| x.0.clone())
@@ -14,15 +11,3 @@ pub async fn file_types() -> Result<Vec<String>> {
     file_types_names.sort_by(|a, b| a.cmp(&b));
     Ok(file_types_names)
 }
-
-// #[get("/api/config")]
-// pub async fn config() -> Result<Config, ServerFnError> {
-//     match Config::new() {
-//         Ok(c) => Ok(c),
-//         Err(e) => Err(ServerFnError::ServerError {
-//             message: "Failed to load config".to_string(),
-//             code: 500,
-//             details: Some(format!("{:?}", e).into()),
-//         }),
-//     }
-// }

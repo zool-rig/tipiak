@@ -49,6 +49,12 @@ pub fn FilePreview(id: i64, type_name: String) -> Element {
                         controls: true,
                     }
                 },
+                "videos" => rsx! {
+                    video {
+                        src: "/api/media/{id}",
+                        controls: true,
+                    }
+                },
                 _ => rsx! {p { "No preview" } }
             }
         }

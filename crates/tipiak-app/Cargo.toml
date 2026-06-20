@@ -21,6 +21,9 @@ tipiak-search-engine = { path = "../tipiak-search-engine" }
 [target.'cfg(feature = "server")'.dependencies]
 tokio-util = { version = "0.7", features = ["io"] }
 
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+getrandom = { workspace = true }
+
 [features]
 default = ["web"]
 web = ["dioxus/web"]

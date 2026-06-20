@@ -37,6 +37,9 @@ COPY --from=planner /app/recipe.json recipe.json
 RUN cargo chef cook --release --target ${TARGET} --recipe-path recipe.json
 
 COPY . .
+# Force l'utilisation du Cargo.lock local
+RUN cargo update -p getrandom --precise 0.2.15
+RUN dx bundle --web --release --target ${TARGET} --package tipiak-app
 
 RUN dx bundle --web --release --target ${TARGET} --package tipiak-app
 

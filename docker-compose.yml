@@ -1,6 +1,6 @@
 services:
   tipiak:
-    image: ghcr.io/<username>/<repo>:latest
+    image: ghcr.io/zool-rig/tipiak:latest
     restart: unless-stopped
     ports:
       - "8080:8080"

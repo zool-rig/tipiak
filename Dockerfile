@@ -38,9 +38,8 @@ RUN cargo chef cook --release --target ${TARGET} --recipe-path recipe.json
 
 COPY . .
 
-# dx bundle doit être lancé depuis la racine du crate
-WORKDIR /app/tipiak/crates/tipiak-app
-RUN dx bundle --web --release --target ${TARGET}
+WORKDIR /app
+RUN dx bundle --web --release --target ${TARGET} --package tipiak-app
 
 FROM debian:bookworm-slim AS runtime
 

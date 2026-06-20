@@ -1,4 +1,4 @@
-FROM rust:1 AS chef
+FROM rust:1.94 AS chef
 RUN cargo install cargo-chef
 WORKDIR /app
 
@@ -6,12 +6,12 @@ FROM chef AS planner
 COPY . .
 RUN cargo chef prepare --recipe-path recipe.json
 
-FROM --platform=linux/amd64 rust:1 AS dx-builder
+FROM --platform=linux/amd64 rust:1.94 AS dx-builder
 RUN curl -L --proto '=https' --tlsv1.2 -sSf \
     https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash
-RUN cargo binstall dioxus-cli --root /.cargo -y --force
+RUN cargo binstall dioxus-cli@0.7.3 --root /.cargo -y --force
 
-FROM --platform=linux/amd64 rust:1 AS builder
+FROM --platform=linux/amd64 rust:1.94 AS builder
 
 ARG TARGET=armv7-unknown-linux-musleabihf
 

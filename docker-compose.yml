@@ -3,7 +3,7 @@ services:
     image: ghcr.io/zool-rig/tipiak:latest
     restart: unless-stopped
     ports:
-      - "8080:8080"
+      - "8090:8090"
     environment:
       - TIPIAK_APP_CONFIG_PATH=/config/tipiak_app.toml
     volumes:

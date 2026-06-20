@@ -8,5 +8,5 @@ members = [
 
 resolver = "3"
 
-[workspace.dependencies]
+[target.'cfg(target_arch = "wasm32")'.dependencies]
 getrandom = { version = "0.3", features = ["wasm_js"] }

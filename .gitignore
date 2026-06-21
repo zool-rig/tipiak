@@ -1,6 +1,5 @@
 /target
 /tests_root
 .db
-Cargo.lock
 *.aseprite
 tipiak_app.toml

@@ -37,7 +37,8 @@ COPY --from=planner /app/recipe.json recipe.json
 RUN cargo chef cook --release --target ${TARGET} --recipe-path recipe.json
 
 COPY . .
-RUN dx bundle --web --release --target ${TARGET} --package tipiak-app
+RUN RUSTFLAGS='--cfg getrandom_backend="wasm_js"' \
+    dx bundle --web --release --target ${TARGET} --package tipiak-app
 
 FROM debian:bookworm-slim AS runtime
 

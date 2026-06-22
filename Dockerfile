@@ -37,7 +37,18 @@ COPY --from=planner /app/recipe.json recipe.json
 RUN cargo chef cook --release --target ${TARGET} --recipe-path recipe.json
 
 COPY . .
-RUN dx bundle --web --release --target ${TARGET} --package tipiak-app
+
+# dx bundle gère le frontend WASM et les assets sans --target
+RUN dx bundle --web --release --package tipiak-app
+
+# Cross-compile le binaire serveur pour ARM séparément
+RUN cargo build --release --target ${TARGET} \
+    --package tipiak-app \
+    --features server
+
+# Remplace le binaire serveur x86 par le binaire ARM
+RUN cp target/${TARGET}/release/tipiak-app \
+       target/dx/tipiak-app/release/web/server
 
 FROM debian:bookworm-slim AS runtime
 

@@ -13,20 +13,19 @@ RUN cargo binstall dioxus-cli@0.7.3 --root /.cargo -y --force
 
 FROM --platform=linux/amd64 rust:1.96 AS builder
 
-ARG TARGET=armv7-unknown-linux-musleabihf
+ARG TARGET=armv7-unknown-linux-gnueabihf
 
 RUN cargo install cargo-chef
 
 RUN apt-get update && apt-get install -y \
     gcc-arm-linux-gnueabihf \
-    musl-tools \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
 RUN rustup target add ${TARGET}
 
-ENV CARGO_TARGET_ARMV7_UNKNOWN_LINUX_MUSLEABIHF_LINKER=arm-linux-gnueabihf-gcc
-ENV CC_armv7_unknown_linux_musleabihf=arm-linux-gnueabihf-gcc
+ENV CARGO_TARGET_ARMV7_UNKNOWN_LINUX_GNUEABIHF_LINKER=arm-linux-gnueabihf-gcc
+ENV CC_armv7_unknown_linux_gnueabihf=arm-linux-gnueabihf-gcc
 
 COPY --from=dx-builder /.cargo/bin/dx /.cargo/bin/dx
 ENV PATH="/.cargo/bin:$PATH"
@@ -51,6 +50,10 @@ RUN cp target/${TARGET}/release/tipiak-app \
        target/dx/tipiak-app/release/web/server
 
 FROM debian:bookworm-slim AS runtime
+
+RUN apt-get update && apt-get install -y \
+    libsqlite3-0 \
+    && rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /app/target/dx/tipiak-app/release/web/ /usr/local/app
 

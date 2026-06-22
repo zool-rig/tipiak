@@ -37,6 +37,6 @@ jobs:
           push: ${{ github.ref == 'refs/heads/main' }}
           tags: ghcr.io/${{ github.repository }}:latest
           build-args: |
-            TARGET=armv7-unknown-linux-musleabihf
+            TARGET=armv7-unknown-linux-gnueabihf
           cache-from: type=gha
           cache-to: type=gha,mode=max

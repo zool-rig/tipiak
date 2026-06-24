@@ -6,7 +6,7 @@ use std::{
 };
 
 use crate::config::get_config;
-use crate::constants::DB_NAME;
+use crate::constants::{DB_NAME, CONFIG_PATH_ENV_KEY};
 use crate::db::queries::{
     ENABLE_FOREIGN_KEYS_QUERY, SELECT_ALL_TOKENS_QUERY, SELECT_PATH_FROM_ID_QUERY,
 };
@@ -29,7 +29,12 @@ pub fn get_db_path(root_dir: &Path) -> PathBuf {
 pub fn get_all_tokens(root_dir: &Path) -> Result<Vec<String>, Box<dyn Error>> {
     let db_path = get_db_path(root_dir);
     if !db_path.exists() {
-        return Err(format!("Database not found. root_dir={:?}, config={:?}", root_dir, get_config()).into());
+        return Err(format!(
+            "Database not found. root_dir={:?}, config={:?}, env={:?}",
+            root_dir,
+            get_config(),
+            std::env::var(CONFIG_PATH_ENV_KEY)
+        ).into());
     }
     let conn = connect(&db_path)?;
     let mut stmt = conn.prepare(SELECT_ALL_TOKENS_QUERY)?;
@@ -48,7 +53,12 @@ pub fn get_all_tokens(root_dir: &Path) -> Result<Vec<String>, Box<dyn Error>> {
 pub fn get_path_from_id(root_dir: &Path, id: i64) -> Result<Option<PathBuf>, Box<dyn Error>> {
     let db_path = get_db_path(root_dir);
     if !db_path.exists() {
-        return Err(format!("Database not found. root_dir={:?}, config={:?}", root_dir, get_config()).into());
+        return Err(format!(
+            "Database not found. root_dir={:?}, config={:?}, env={:?}",
+            root_dir,
+            get_config(),
+            std::env::var(CONFIG_PATH_ENV_KEY)
+        ).into());
     }
     let conn = connect(&db_path)?;
     let mut stmt = conn.prepare(SELECT_PATH_FROM_ID_QUERY)?;

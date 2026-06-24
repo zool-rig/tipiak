@@ -29,7 +29,7 @@ pub fn get_db_path(root_dir: &Path) -> PathBuf {
 pub fn get_all_tokens(root_dir: &Path) -> Result<Vec<String>, Box<dyn Error>> {
     let db_path = get_db_path(root_dir);
     if !db_path.exists() {
-        return Err(format!("Database not found in {:?}", root_dir).into());
+        return Err(format!("Database not found. root_dir={:?}, config={:?}", root_dir, get_config()).into());
     }
     let conn = connect(&db_path)?;
     let mut stmt = conn.prepare(SELECT_ALL_TOKENS_QUERY)?;
@@ -48,7 +48,7 @@ pub fn get_all_tokens(root_dir: &Path) -> Result<Vec<String>, Box<dyn Error>> {
 pub fn get_path_from_id(root_dir: &Path, id: i64) -> Result<Option<PathBuf>, Box<dyn Error>> {
     let db_path = get_db_path(root_dir);
     if !db_path.exists() {
-        return Err(format!("Database not found in {:?}", root_dir).into());
+        return Err(format!("Database not found. root_dir={:?}, config={:?}", root_dir, get_config()).into());
     }
     let conn = connect(&db_path)?;
     let mut stmt = conn.prepare(SELECT_PATH_FROM_ID_QUERY)?;

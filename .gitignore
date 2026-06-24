@@ -3,3 +3,4 @@
 .db
 *.aseprite
 tipiak_app.toml
+.cargo

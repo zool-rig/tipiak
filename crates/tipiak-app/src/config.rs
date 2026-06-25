@@ -3,6 +3,7 @@ use std::{error::Error, fs, path::PathBuf};
 
 use crate::constants::{CONFIG_NAME, CONFIG_PATH_ENV_KEY};
 
+// NOTE may be only server side
 #[derive(Deserialize, Debug, Default)]
 pub struct Config {
     pub storage_dir: String,

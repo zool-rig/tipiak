@@ -1,5 +1,6 @@
 use serde::Deserialize;
 use std::{self, collections::HashMap, error::Error, fs, path::PathBuf, sync::OnceLock};
+use log::info;
 
 use crate::constants::{CONFIG_NAME, CONFIG_PATH_ENV_KEY};
 
@@ -70,14 +71,15 @@ impl Config {
             for mut path in std::env::split_paths(&env_config_paths) {
                 path.push(CONFIG_NAME);
                 if path.exists() {
-                    config_paths.push(path)
+                    info!("Found config in {:?}", path);
+                    config_paths.push(path);
                 }
             }
         }
 
         let mut result_config = Config::default();
         for config_path in config_paths {
-            let config: Config = toml::from_str(&fs::read_to_string(config_path)?)?;
+            let config: Config = toml::from_str(&fs::read_to_string(config_path)?)?;  // TODO this force to write all fields in config
             result_config.update(&config);
         }
 

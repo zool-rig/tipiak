@@ -4,6 +4,7 @@ use std::{
     error::Error,
     path::{Path, PathBuf},
 };
+use log::info;
 
 use crate::config::get_config;
 use crate::constants::{DB_NAME, CONFIG_PATH_ENV_KEY};
@@ -19,8 +20,14 @@ pub fn connect(db_path: &Path) -> Result<Connection, Box<dyn Error>> {
 
 pub fn get_db_path(root_dir: &Path) -> PathBuf {
     let mut db_path = match &get_config().db_override_path {
-        Some(path) => PathBuf::from(path),
-        None => PathBuf::from(root_dir),
+        Some(path) => {
+            info!("Found db_override_path : {:?}", path);
+            PathBuf::from(path)
+        },
+        None => {
+            info!("No db_override_path, falling back to : {:?}", root_dir);
+            PathBuf::from(root_dir)
+        },
     };
     db_path.push(DB_NAME);
     db_path

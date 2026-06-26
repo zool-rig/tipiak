@@ -5,11 +5,14 @@ services:
     ports:
       - "8090:8090"
     environment:
-      - TIPIAK_APP_CONFIG_PATH=/config/tipiak_app.toml
-      - TIPIAK_SE_CONFIG_PATH=/config/tipiak_se.toml
+      - TIPIAK_APP_CONFIG_PATH=/config/
+      - TIPIAK_SE_CONFIG_PATH=/config/
+      - LANG=C.UTF-8
+      - LC_ALL=C.UTF-8
+      - PORT=8090
+      - IP=0.0.0.0
     volumes:
       - /home/zoolpi/.tipiak/lorenzo/tipiak_app.toml:/config/tipiak_app.toml:ro
       - /mnt/ssd/lorenzo:/data/storage:ro
       - /home/zoolpi/.tipiak/lorenzo/tipiak_se-docker.toml:/config/tipiak_se.toml:ro
       - /home/zoolpi/.tipiak/lorenzo/.db:/data/.db:ro
-

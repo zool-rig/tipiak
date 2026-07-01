@@ -1,14 +1,15 @@
 use serde::Deserialize;
-use std::{error::Error, fs, path::PathBuf};
+use std::{error::Error, fs, path::PathBuf, env};
 
-use crate::constants::{CONFIG_NAME, CONFIG_PATH_ENV_KEY};
+use crate::constants::{CONFIG_NAME, CONFIG_PATH_ENV_KEY, STORAGE_DIR_ENV_KEY};
 
-// NOTE may be only server side
+#[allow(unused)]
 #[derive(Deserialize, Debug, Default)]
 pub struct Config {
     pub storage_dir: String,
 }
 
+#[allow(unused)]
 impl Config {
     fn update(&mut self, other: &Config) -> &mut Self {
         self.storage_dir = other.storage_dir.clone();
@@ -36,6 +37,10 @@ impl Config {
         for config_path in config_paths {
             let config: Config = toml::from_str(&fs::read_to_string(config_path)?)?;
             result_config.update(&config);
+        }
+
+        if let Ok(storage_dir) = env::var(STORAGE_DIR_ENV_KEY) {
+            result_config.storage_dir = storage_dir;
         }
 
         Ok(result_config)

@@ -1,8 +1,8 @@
 use serde::Deserialize;
-use std::{self, collections::HashMap, error::Error, fs, path::PathBuf, sync::OnceLock};
+use std::{self, collections::HashMap, error::Error, fs, path::PathBuf, sync::OnceLock, env};
 use log::info;
 
-use crate::constants::{CONFIG_NAME, CONFIG_PATH_ENV_KEY};
+use crate::constants::{CONFIG_NAME, CONFIG_PATH_ENV_KEY, DB_OVERRIDE_PATH_ENV_KEY};
 
 static CONFIG: OnceLock<Config> = OnceLock::new();
 
@@ -79,8 +79,12 @@ impl Config {
 
         let mut result_config = Config::default();
         for config_path in config_paths {
-            let config: Config = toml::from_str(&fs::read_to_string(config_path)?)?;  // TODO this force to write all fields in config
+            let config: Config = toml::from_str(&fs::read_to_string(config_path)?)?;
             result_config.update(&config);
+        }
+
+        if let Ok(db_override_path) = env::var(DB_OVERRIDE_PATH_ENV_KEY) {
+            result_config.db_override_path = Some(db_override_path);
         }
 
         Ok(result_config)

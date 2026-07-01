@@ -5,14 +5,16 @@ services:
     ports:
       - "8090:8090"
     environment:
-      - TIPIAK_APP_CONFIG_PATH=/config/
-      - TIPIAK_SE_CONFIG_PATH=/config/
       - LANG=C.UTF-8
       - LC_ALL=C.UTF-8
       - PORT=8090
       - IP=0.0.0.0
+      - TIPIAK_APP_STORAGE_DIR=<PATH TO YOUR STORAGE DIR>
+      - TIPIAK_SE_DB_OVERRIDE_PATH=/data/
+      # - TIPIAK_APP_CONFIG_PATH=/config/                                         # Enable if you want to use the app config
+      # - TIPIAK_SE_CONFIG_PATH=/config/                                          # Enable if you want to use the search engine config
     volumes:
-      - /home/zoolpi/.tipiak/lorenzo/tipiak_app.toml:/config/tipiak_app.toml:ro
-      - /mnt/ssd/lorenzo:/data/storage:ro
-      - /home/zoolpi/.tipiak/lorenzo/tipiak_se-docker.toml:/config/tipiak_se.toml:ro
-      - /home/zoolpi/.tipiak/lorenzo/.db:/data/.db:ro
+      # - <PATH TO YOUR CONFIG>/tipiak_app.toml:/config/tipiak_app.toml:ro        # Enable if you want to use the app config
+      # - <PATH TO YOUR CONFIG>/tipiak_se-docker.toml:/config/tipiak_se.toml:ro   # Enable if you want to use the search engine config
+      - <PATH TO YOUR STORAGE DIR>:<PATH TO YOUR STORAGE DIR>:ro
+      - <PATH TO YOUR DATABASE DIR>/.db:/data/.db:ro

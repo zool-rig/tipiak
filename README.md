@@ -64,9 +64,70 @@ Finally, the web client lets you search for and download your files from any mac
 
 ## Installation
 
-🚧 TODO 🚧
+1. Download the appropriate `tipiak-cli` executable for your server from [the latest release](https://github.com/zool-rig/tipiak/releases/latest). Then copy it there.
+
+2. Run the crawler on a storage with `tipiak-cli crawl --path <YOUR PATH>`
+
+    >[!NOTE]
+    >You can set the `TIPIAK_SE_DB_OVERRIDE_PATH` environment variable to override where the database file will be created, by default it's in the storage directory`
+
+3. If you want the crawler to be triggered automatically when a file is created in your storage, you can start a shell and run the `tipiak-cli watch` command.
+
+    Or setup a systemctl service (assuming your server runs on linux) :
+
+    a. Create a `tipiak-watch.service` file in `/etc/systemd/system`
+    
+    b. Paste and edit the following content in the file :
+    
+    ```ini
+    [Unit]
+    Description=Watch a directory and run the Tipiak search engine crawler
+    After=network.target
+
+    [Service]
+    Type=simple
+    User=<YOUR USER>
+    WorkingDirectory=<YOUR STORAGE DIRECTORY>
+    <!-- Environment="TIPIAK_SE_CONFIG_PATH=<PATH TO YOUR CONFIG>" -->
+    <!-- OR -->
+    <!-- Environment="TIPIAK_SE_DB_OVERRIDE_PATH=<PATH TO YOUR OVERRIDE>" -->
+    ExecStart=<ABS PATH OF YOUR BIN>/tipiak-cli watch -p <YOUR STORAGE DIRECTORY>
+
+    Restart=always
+    RestartSec=5
+
+    [Install]
+    WantedBy=multi-user.target
+    ```
+
+    c. Run the following commands : 
+
+    ```bash
+    sudo systemctl daemon-reload
+    sudo systemctl start tipiak-watch.service
+    sudo systemctl status tipiak-watch.service
+    ```
+
+    The watcher should be running now, try adding some files in your storage and then rerun `sudo systemctl status tipiak-watch.service` to see changed logs
+
+4. [Install Docker](https://docs.docker.com/get-started/) if you don't have it already on your server.
+
+5. Copy the `docker-compose.yml` file from this repository somewhere in your server.
+
+6. `cd` where you copied the file then run : 
+
+    ```bash
+    docker compose pull
+    docker compose up -d
+    ```
+
+    Your done ! Tipiak should be served on your local network !
 
 ### Search Engine Configuration
+
+You can set the `TIPIAK_SE_DB_OVERRIDE_PATH` environment variable to specify the directory where the database file is created.
+
+Or
 
 Create a `tipiak_se.toml` file in your working directory, or at a location referenced by the `TIPIAK_SE_CONFIG_PATH` environment variable.
 
@@ -78,6 +139,10 @@ Contents:
 | db_override_path | `Option<String>` | Path where the SQLite database file should be saved. By default, it is saved at the root of the storage directory | None |
 
 ### Client Configuration
+
+You can set the `TIPIAK_APP_STORAGE_DIR` environment variable to specify where is the storage directory for an instance of the app.
+
+Or
 
 Create a `tipiak_app.toml` file in your working directory, or at a location referenced by the `TIPIAK_APP_CONFIG_PATH` environment variable.
 
@@ -92,6 +157,10 @@ Contents:
 * The project already supports a wide range of file types, and more can be added over time.
 
 * The web client's UI/UX can still be improved.
+
+* For now the docker image is only for an armv7 32bit architecture (the raspberry pi that I use).
+
+* The configuration system should be smoother, by default the database file is created inside the storage for this reason the watcher is triggered every time a something is inserted into the database. The database override path configuration makes it possible to bypass this performance issue but it's not very clean.
 
 ## Contributing
 

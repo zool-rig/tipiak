@@ -326,8 +326,8 @@ mod tests {
         let cluster_ptr_pos = 100_u64.to_le_bytes();
         data[48..56].copy_from_slice(&cluster_ptr_pos);
 
-        data.extend(std::iter::repeat(0).take(10));
-        data.extend(std::iter::repeat(0).take(10));
+        data.extend(std::iter::repeat_n(0, 10));
+        data.extend(std::iter::repeat_n(0, 10));
 
         let current_size = data.len() + 16;
         let c0_offset = current_size as u64;
@@ -386,7 +386,7 @@ mod tests {
         let cluster_ptr_pos = 120_u64.to_le_bytes();
         data[48..56].copy_from_slice(&cluster_ptr_pos);
 
-        data.extend(std::iter::repeat(0).take(10));
+        data.extend(std::iter::repeat_n(0, 10));
 
         let d0_ptr = 150_u64;
         let d1_ptr = 200_u64;
@@ -455,7 +455,7 @@ mod tests {
         let cluster_ptr_pos = 108_u64.to_le_bytes();
         data[48..56].copy_from_slice(&cluster_ptr_pos);
 
-        data.extend(std::iter::repeat(0).take(20));
+        data.extend(std::iter::repeat_n(0, 20));
 
         let c0_offset = 116_u64;
         let d0_ptr = 130_u64;
@@ -514,7 +514,7 @@ mod tests {
         let cluster_ptr_pos = 124_u64.to_le_bytes();
         data[48..56].copy_from_slice(&cluster_ptr_pos);
 
-        data.extend(std::iter::repeat(0).take(20));
+        data.extend(std::iter::repeat_n(0, 20));
 
         let c0_offset = 132_u64;
         let d0_ptr = 157_u64;
@@ -615,8 +615,8 @@ mod tests {
         let cluster_ptr_pos = 100_u64.to_le_bytes();
         data[48..56].copy_from_slice(&cluster_ptr_pos);
 
-        data.extend(std::iter::repeat(0).take(10));
-        data.extend(std::iter::repeat(0).take(10));
+        data.extend(std::iter::repeat_n(0, 10));
+        data.extend(std::iter::repeat_n(0, 10));
 
         let c0_offset = 116_u64;
         let c1_offset = 140_u64;

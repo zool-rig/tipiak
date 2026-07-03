@@ -1,5 +1,5 @@
 use serde::Deserialize;
-use std::{error::Error, fs, path::PathBuf, env};
+use std::{env, error::Error, fs, path::PathBuf};
 
 use crate::constants::{CONFIG_NAME, CONFIG_PATH_ENV_KEY, STORAGE_DIR_ENV_KEY};
 

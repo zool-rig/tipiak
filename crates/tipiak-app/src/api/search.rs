@@ -13,9 +13,9 @@ pub async fn search(
     pattern: String,
     filters: Vec<bool>,
 ) -> Result<Vec<PayloadFile>, ServerFnError> {
+    use crate::config::Config;
     use std::path::Path;
     use tipiak_search_engine;
-    use crate::config::Config;
 
     let se_config = &tipiak_search_engine::get_config();
     let mut file_types_names: Vec<String> =

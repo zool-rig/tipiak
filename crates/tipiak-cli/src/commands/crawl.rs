@@ -11,7 +11,7 @@ pub struct CrawlCommand {
 
     // If the sqlite database file exists, delete it
     #[arg(long, short)]
-    reset: bool
+    reset: bool,
 }
 
 impl CrawlCommand {

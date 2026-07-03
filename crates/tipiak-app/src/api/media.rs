@@ -1,11 +1,10 @@
 use dioxus::{fullstack::FileStream, prelude::*};
 
-
 #[get("/api/media/:id")]
 pub async fn media(id: i64) -> Result<FileStream, ServerFnError> {
+    use crate::config::Config;
     use std::path::Path;
     use tipiak_search_engine;
-    use crate::config::Config;
 
     match Config::new() {
         Ok(config) => {
@@ -38,7 +37,6 @@ pub async fn media(id: i64) -> Result<FileStream, ServerFnError> {
     }
 }
 
-
 #[cfg(feature = "server")]
 pub mod download {
     use dioxus::server::axum::{
@@ -58,14 +56,12 @@ pub mod download {
             Err(_) => return StatusCode::INTERNAL_SERVER_ERROR.into_response(),
         };
 
-        let path = match tipiak_search_engine::get_path_from_id(
-            StdPath::new(&config.storage_dir),
-            id,
-        ) {
-            Ok(Some(p)) => p,
-            Ok(None) => return StatusCode::NOT_FOUND.into_response(),
-            Err(_) => return StatusCode::INTERNAL_SERVER_ERROR.into_response(),
-        };
+        let path =
+            match tipiak_search_engine::get_path_from_id(StdPath::new(&config.storage_dir), id) {
+                Ok(Some(p)) => p,
+                Ok(None) => return StatusCode::NOT_FOUND.into_response(),
+                Err(_) => return StatusCode::INTERNAL_SERVER_ERROR.into_response(),
+            };
 
         let filename = path
             .file_name()

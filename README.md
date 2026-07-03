@@ -68,8 +68,8 @@ Finally, the web client lets you search for and download your files from any mac
 
 2. Run the crawler on a storage with `tipiak-cli crawl --path <YOUR PATH>`
 
-    >[!NOTE]
-    >You can set the `TIPIAK_SE_DB_OVERRIDE_PATH` environment variable to override where the database file will be created, by default it's in the storage directory`
+>[!NOTE]
+>You can set the `TIPIAK_SE_DB_OVERRIDE_PATH` environment variable to override where the database file will be created, by default it's in the storage directory`
 
 3. If you want the crawler to be triggered automatically when a file is created in your storage, you can start a shell and run the `tipiak-cli watch` command.
 

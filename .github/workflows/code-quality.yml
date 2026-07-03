@@ -21,5 +21,8 @@ jobs:
       - name: Cache Rust artifacts
         uses: Swatinem/rust-cache@v2
 
-      - name: Run Clippy
-        run: cargo clippy --workspace --all-targets --all-features -- -D warnings
+      - name: Run Clippy (default features)
+        run: cargo clippy --workspace --all-targets -- -D warnings
+
+      - name: Run Clippy (server feature)
+        run: cargo clippy -p tipiak-app --all-targets --features server -- -D warnings

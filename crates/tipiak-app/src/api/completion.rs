@@ -11,7 +11,7 @@ pub async fn completion(pattern: String) -> Result<Vec<String>, ServerFnError> {
     use tipiak_search_engine;
 
     match Config::new() {
-        Ok(config) => match tipiak_search_engine::get_all_tokens(&Path::new(&config.storage_dir)) {
+        Ok(config) => match tipiak_search_engine::get_all_tokens(Path::new(&config.storage_dir)) {
             Ok(tokens) => {
                 let pattern_lower = pattern.to_lowercase();
                 Ok(tokens

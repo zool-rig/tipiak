@@ -167,8 +167,8 @@ mod tests {
         payload.extend_from_slice(&off0.to_le_bytes());
         payload.extend_from_slice(&off1.to_le_bytes());
         payload.extend_from_slice(&off2.to_le_bytes());
-        payload.extend(std::iter::repeat(0xAA).take(10));
-        payload.extend(std::iter::repeat(0xBB).take(5));
+        payload.extend(std::iter::repeat_n(0xAA, 10));
+        payload.extend(std::iter::repeat_n(0xBB, 5));
         payload
     }
 
@@ -181,8 +181,8 @@ mod tests {
         payload.extend_from_slice(&off0.to_le_bytes());
         payload.extend_from_slice(&off1.to_le_bytes());
         payload.extend_from_slice(&off2.to_le_bytes());
-        payload.extend(std::iter::repeat(0xAA).take(10));
-        payload.extend(std::iter::repeat(0xBB).take(5));
+        payload.extend(std::iter::repeat_n(0xAA, 10));
+        payload.extend(std::iter::repeat_n(0xBB, 5));
         payload
     }
 

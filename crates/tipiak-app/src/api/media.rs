@@ -8,7 +8,7 @@ pub async fn media(id: i64) -> Result<FileStream, ServerFnError> {
 
     match Config::new() {
         Ok(config) => {
-            match tipiak_search_engine::get_path_from_id(&Path::new(&config.storage_dir), id) {
+            match tipiak_search_engine::get_path_from_id(Path::new(&config.storage_dir), id) {
                 Ok(Some(path)) => match FileStream::from_path(&path).await {
                     Ok(stream) => Ok(stream),
                     Err(e) => Err(ServerFnError::ServerError {

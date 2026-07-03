@@ -20,7 +20,7 @@ pub async fn search(
     let se_config = &tipiak_search_engine::get_config();
     let mut file_types_names: Vec<String> =
         se_config.file_types.iter().map(|x| x.0.clone()).collect();
-    file_types_names.sort_by(|a, b| a.cmp(&b));
+    file_types_names.sort();
     let filters_str = file_types_names
         .iter()
         .enumerate()
@@ -32,7 +32,7 @@ pub async fn search(
     match Config::new() {
         Ok(config) => {
             match tipiak_search_engine::search(
-                &Path::new(&config.storage_dir),
+                Path::new(&config.storage_dir),
                 &pattern,
                 Some(tipiak_search_engine::FileTypeFilters::from_string(
                     filters_str,

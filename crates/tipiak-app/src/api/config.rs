@@ -8,6 +8,6 @@ pub async fn file_types() -> Result<Vec<String>> {
         .iter()
         .map(|x| x.0.clone())
         .collect();
-    file_types_names.sort_by(|a, b| a.cmp(&b));
+    file_types_names.sort();
     Ok(file_types_names)
 }

@@ -8,7 +8,7 @@ use crate::utils::encode_filters;
 
 #[component]
 pub fn Home() -> Element {
-    let pattern = use_signal(|| String::new());
+    let pattern = use_signal(String::new);
     let filters = use_signal(|| vec![true; 5]);
     let navigator = use_navigator();
 

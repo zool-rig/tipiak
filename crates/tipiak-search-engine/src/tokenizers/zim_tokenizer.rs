@@ -6,7 +6,7 @@ use crate::tokenizers::tokenizer::Tokenizer;
 use crate::utils::fs_utils::is_file_type;
 use crate::utils::token_utils::tokenize_string;
 
-const METADATA_KEYS: &'static [&str] = &["Creator", "Description", "Name", "Tags", "Title"];
+const METADATA_KEYS: &[&str] = &["Creator", "Description", "Name", "Tags", "Title"];
 
 pub struct ZimTokenizer;
 

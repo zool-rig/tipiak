@@ -1,6 +1,6 @@
-use serde::Deserialize;
-use std::{self, collections::HashMap, error::Error, fs, path::PathBuf, sync::OnceLock, env};
 use log::info;
+use serde::Deserialize;
+use std::{self, collections::HashMap, env, error::Error, fs, path::PathBuf, sync::OnceLock};
 
 use crate::constants::{CONFIG_NAME, CONFIG_PATH_ENV_KEY, DB_OVERRIDE_PATH_ENV_KEY};
 

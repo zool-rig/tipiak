@@ -1,8 +1,7 @@
 use libzim_rs::parse_zim;
 
 fn main() {
-    let zim_file = parse_zim("/tmp/simple_webpage.zim")
-        .unwrap();
+    let zim_file = parse_zim("/tmp/simple_webpage.zim").unwrap();
     println!(
         "{}.{}",
         zim_file.header.major_version, zim_file.header.minor_version
@@ -40,5 +39,8 @@ fn main() {
         }
     }
 
-    println!("Name: {}", zim_file.get_metadata_str("Name").unwrap_or("".to_string()));
+    println!(
+        "Name: {}",
+        zim_file.get_metadata_str("Name").unwrap_or("".to_string())
+    );
 }

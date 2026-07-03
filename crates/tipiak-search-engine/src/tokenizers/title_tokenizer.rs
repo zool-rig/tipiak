@@ -19,7 +19,11 @@ impl Tokenizer for MarkdownTitleTokenizer {
         is_file_type(path, vec!["txt", "md"])
     }
 
-    fn tokenize(&self, path: &Path, _root_dir: &Path) -> Result<HashSet<String>, Box<dyn std::error::Error>> {
+    fn tokenize(
+        &self,
+        path: &Path,
+        _root_dir: &Path,
+    ) -> Result<HashSet<String>, Box<dyn std::error::Error>> {
         let file = fs::File::open(path)?;
         let buffer = io::BufReader::new(file);
         let md_title_expr = get_md_title_expr();

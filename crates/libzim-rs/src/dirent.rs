@@ -32,7 +32,9 @@ pub struct Dirent {
 impl Dirent {
     pub fn parse(mut reader: impl Read) -> Result<Self, String> {
         let mut fixed_buf = [0u8; 8];
-        reader.read_exact(&mut fixed_buf).map_err(|e| e.to_string())?;
+        reader
+            .read_exact(&mut fixed_buf)
+            .map_err(|e| e.to_string())?;
 
         let mime_type = u16::from_le_bytes(fixed_buf[0..2].try_into().unwrap());
         let extra_len = fixed_buf[2];
@@ -64,7 +66,9 @@ impl Dirent {
 
         let mut parameter = vec![0u8; extra_len as usize];
         if extra_len > 0 {
-            reader.read_exact(&mut parameter).map_err(|e| e.to_string())?;
+            reader
+                .read_exact(&mut parameter)
+                .map_err(|e| e.to_string())?;
         }
 
         Ok(Dirent {
@@ -161,7 +165,11 @@ mod tests {
         assert_eq!(dirent.namespace, 'C');
         assert_eq!(dirent.revision, 123);
         assert!(dirent.is_article());
-        if let DirentData::Content { cluster_number, blob_number } = dirent.data {
+        if let DirentData::Content {
+            cluster_number,
+            blob_number,
+        } = dirent.data
+        {
             assert_eq!(cluster_number, 10);
             assert_eq!(blob_number, 20);
         } else {

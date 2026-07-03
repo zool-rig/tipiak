@@ -15,11 +15,11 @@ fn main() {
 
     #[cfg(feature = "server")]
     dioxus::serve(|| async move {
-        use dioxus::server::axum::routing::get;
-        use crate::api::media::download::media_download;  // ← chemin correct
+        use crate::api::media::download::media_download;
+        use dioxus::server::axum::routing::get; // ← chemin correct
 
-        let router = dioxus::server::router(App)
-            .route("/api/media/download/{id}", get(media_download));
+        let router =
+            dioxus::server::router(App).route("/api/media/download/{id}", get(media_download));
 
         Ok(router)
     });

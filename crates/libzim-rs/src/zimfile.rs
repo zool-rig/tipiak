@@ -193,7 +193,9 @@ impl ZimFile {
     pub fn blob_size(&self, cluster_number: usize, blob_number: usize) -> Option<u64> {
         let offset = *self.cluster_pointers.get(cluster_number)?;
         let mut store = self.store.lock().ok()?;
-        store.cluster(cluster_number, offset)?.get_blob_size(blob_number)
+        store
+            .cluster(cluster_number, offset)?
+            .get_blob_size(blob_number)
     }
 
     pub fn get_content(&self, dirent: &Dirent) -> Option<Vec<u8>> {
@@ -585,7 +587,10 @@ mod tests {
         assert_eq!(keys, vec!["Description", "Publisher", "Title"]);
 
         assert_eq!(zim.get_metadata_str("Publisher"), Some("Kiwix".to_string()));
-        assert_eq!(zim.get_metadata_str("Description"), Some("Offline".to_string()));
+        assert_eq!(
+            zim.get_metadata_str("Description"),
+            Some("Offline".to_string())
+        );
         assert_eq!(zim.get_metadata_str("Title"), Some("Kiwix".to_string()));
         assert_eq!(zim.get_metadata_str("Unknown"), None);
         assert_eq!(zim.get_metadata("Publisher"), Some(b"Kiwix".to_vec()));
@@ -636,8 +641,8 @@ mod tests {
         data.extend_from_slice(&14u32.to_le_bytes());
         data.extend(b"second");
 
-        let zim = ZimFile::parse_bytes_with_cache_capacity(Cursor::new(data), 1)
-            .expect("Parse failed");
+        let zim =
+            ZimFile::parse_bytes_with_cache_capacity(Cursor::new(data), 1).expect("Parse failed");
 
         assert_eq!(zim.get_blob(0, 0), Some(b"first".to_vec()));
         assert_eq!(zim.cached_cluster_count(), 1);

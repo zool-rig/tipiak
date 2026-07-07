@@ -1,13 +1,13 @@
+use log::info;
 use rusqlite::Connection;
 use std::{
     collections::HashSet,
     error::Error,
     path::{Path, PathBuf},
 };
-use log::info;
 
 use crate::config::get_config;
-use crate::constants::{DB_NAME, CONFIG_PATH_ENV_KEY};
+use crate::constants::{CONFIG_PATH_ENV_KEY, DB_NAME};
 use crate::db::queries::{
     ENABLE_FOREIGN_KEYS_QUERY, SELECT_ALL_TOKENS_QUERY, SELECT_PATH_FROM_ID_QUERY,
 };
@@ -23,11 +23,11 @@ pub fn get_db_path(root_dir: &Path) -> PathBuf {
         Some(path) => {
             info!("Found db_override_path : {:?}", path);
             PathBuf::from(path)
-        },
+        }
         None => {
             info!("No db_override_path, falling back to : {:?}", root_dir);
             PathBuf::from(root_dir)
-        },
+        }
     };
     db_path.push(DB_NAME);
     db_path
@@ -41,7 +41,8 @@ pub fn get_all_tokens(root_dir: &Path) -> Result<Vec<String>, Box<dyn Error>> {
             root_dir,
             get_config(),
             std::env::var(CONFIG_PATH_ENV_KEY)
-        ).into());
+        )
+        .into());
     }
     let conn = connect(&db_path)?;
     let mut stmt = conn.prepare(SELECT_ALL_TOKENS_QUERY)?;
@@ -65,7 +66,8 @@ pub fn get_path_from_id(root_dir: &Path, id: i64) -> Result<Option<PathBuf>, Box
             root_dir,
             get_config(),
             std::env::var(CONFIG_PATH_ENV_KEY)
-        ).into());
+        )
+        .into());
     }
     let conn = connect(&db_path)?;
     let mut stmt = conn.prepare(SELECT_PATH_FROM_ID_QUERY)?;

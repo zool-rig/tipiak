@@ -55,7 +55,7 @@ pub fn search(
     let inputs: Vec<String> = tokenize_string(input.to_string()).into_iter().collect();
 
     if inputs.is_empty() {
-        return Ok(vec![])
+        return Ok(vec![]);
     }
 
     let input = inputs.join(" OR ");

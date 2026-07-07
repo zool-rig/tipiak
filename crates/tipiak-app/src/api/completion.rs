@@ -6,9 +6,9 @@ pub async fn completion(pattern: String) -> Result<Vec<String>, ServerFnError> {
         return Ok(vec![]);
     }
 
+    use crate::config::Config;
     use std::path::Path;
     use tipiak_search_engine;
-    use crate::config::Config;
 
     match Config::new() {
         Ok(config) => match tipiak_search_engine::get_all_tokens(&Path::new(&config.storage_dir)) {

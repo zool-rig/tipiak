@@ -1,5 +1,9 @@
-use std::{error::Error, path::{Path, PathBuf}, collections::HashSet};
 use rayon::prelude::*;
+use std::{
+    collections::HashSet,
+    error::Error,
+    path::{Path, PathBuf},
+};
 
 use crate::tokenizers::{
     exif_tokenizer::ExifTokenizer, file_path_tokenizer::FilePathTokenizer,

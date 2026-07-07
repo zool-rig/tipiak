@@ -10,16 +10,19 @@ pub struct SearchBarProps {
 
 #[component]
 pub fn SearchBar(mut props: SearchBarProps) -> Element {
-    let mut suggestions = use_signal(|| Vec::<String>::new());
+    let mut suggestions = use_signal(Vec::<String>::new);
     let mut show_dropdown = use_signal(|| false);
     let mut input_element: Signal<Option<std::rc::Rc<MountedData>>> = use_signal(|| None);
     let mut selected_index = use_signal(|| None::<usize>);
-    let item_refs: Signal<Vec<Option<std::rc::Rc<MountedData>>>> = use_signal(|| Vec::new());
+    let mut item_refs: Signal<Vec<Option<std::rc::Rc<MountedData>>>> = use_signal(Vec::new);
 
     use_effect(move || {
         if let Some(i) = selected_index() {
             if let Some(Some(element)) = item_refs().get(i) {
-                let _ = element.scroll_to(ScrollBehavior::Smooth);
+                let element = element.clone();
+                spawn(async move {
+                    let _ = element.scroll_to(ScrollBehavior::Smooth).await;
+                });
             }
         }
     });
@@ -36,16 +39,13 @@ pub fn SearchBar(mut props: SearchBarProps) -> Element {
                     let value = evt.value();
                     props.pattern.set(value.clone());
 
-                    if value.is_empty() || value.chars().last().unwrap() == ' ' {
+                    if value.is_empty() || value.ends_with(' ') {
                         suggestions.set(vec![]);
                         show_dropdown.set(false);
                         return;
                     }
 
                     spawn({
-                        let mut suggestions = suggestions.clone();
-                        let mut show_dropdown = show_dropdown.clone();
-
                         async move {
                             match completion(value.split_whitespace().last().unwrap_or("").to_string()).await {
                                 Ok(tokens) => {
@@ -79,11 +79,14 @@ pub fn SearchBar(mut props: SearchBarProps) -> Element {
                                             .collect();
                                         let mut new_pattern = words[..words.len() - 1].join(" ");
                                         new_pattern.push(' ');
-                                        new_pattern.push_str(&suggestion);
+                                        new_pattern.push_str(suggestion);
                                         props.pattern.set(new_pattern.trim().to_string());
                                         show_dropdown.set(false);
                                         if let Some(input) = input_element() {
-                                            let _ = input.set_focus(true);
+                                            let input = input.clone();
+                                            spawn(async move {
+                                                let _ = input.set_focus(true).await;
+                                            });
                                         }
                                     }
                                 } else {
@@ -152,12 +155,14 @@ pub fn SearchBar(mut props: SearchBarProps) -> Element {
                                     props.pattern.set(new_pattern.trim().to_string());
                                     show_dropdown.set(false);
                                     if let Some(input) = input_element() {
-                                        let _ = input.set_focus(true);
+                                        let input = input.clone();
+                                        spawn(async move {
+                                            let _ = input.set_focus(true).await;
+                                        });
                                     }
                                 }
                             },
                             onmount: {
-                                let mut item_refs = item_refs.clone();
                                 move |evt| {
                                     item_refs.with_mut(|refs| {
                                         if refs.len() <= i {

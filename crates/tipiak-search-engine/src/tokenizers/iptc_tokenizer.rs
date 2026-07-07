@@ -30,7 +30,7 @@ impl Tokenizer for IptcTokenizer {
                 | IPTCTag::ByLine
                 | IPTCTag::ByLineTitle
                 | IPTCTag::Credit => {
-                    tokens.extend(value.into_iter().map(tokenize_string).flatten());
+                    tokens.extend(value.into_iter().flat_map(tokenize_string));
                 }
                 _ => (),
             }
